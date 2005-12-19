@@ -1,0 +1,189 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Jérôme LELONG                                                       %% 
+%% CERMICS (ENPC)                                                      %%
+%% http://cermics.enpc.fr/~lelong                                      %%
+%% Ce paquet permet de rajouter une page de garde aux preprints        %%
+%% du CERMICS.                                                         %%
+%% Utilisation:                                                        %%
+%% rajouter dans l'en-tête du.tex                                      %%
+%%     \usepackage{preprint}                                           %%
+%% puis avant la commande \maketitle                                   %%
+%%      \pauthor{first author's name}                                  %%
+%%      \paddress{first author's address}                              %%
+%%    et ainsi de suite pour les autres auteurs.                       %%
+%% Si plusieurs auteurs ont la même adresse, alors on déclare          %%
+%% d'abord les noms de auteurs ayant la même adresse et ensuite        %%
+%% leur adresses communeseveral authors have the same address.         %%
+%% \pauthor{author name 1}                                             %%
+%% \pauthor{author name 2}                                             %%
+%% \pauthor{author name 3}                                             %%
+%% \paddress{common address of authors 1, 2 and 3}                     %%
+%%                                                                     %%
+%% Déclarer le titre avec la commande                                  %%
+%%     \ptitle{titre de l'article}                                     %%
+%%                                                                     %%
+%% Déclarer la date                                                    %%
+%%     \date{Mois année}                                               %%
+%% si \pdate n'est pas fournie alors \today est utilisé                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\ProvidesPackage{preprint}[19/12/2005 revision 1.2 by Jérôme LELONG]
+\NeedsTeXFormat{LaTeX2e}
+
+
+
+%% for details on atxy see
+%% http://www-sop.inria.fr/apics/tralics/raweb.html
+%%
+\newbox\@atxybox%
+\def\atxy(#1,#2)#3{\global\setbox\@atxybox=\hbox%
+ {\unhbox\@atxybox
+  \vtop to 0pt{\kern #2\hbox to 0pt{\kern #1\relax #3\hss}\vss}}}%
+
+\def\@useatxy{%
+  \vtop to 0pt{\kern-\headsep \kern-\topmargin \kern-\headheight
+               \kern-1in \kern-\voffset
+    \hbox to 0pt{\kern-\@themargin \kern-1in \kern-\hoffset
+    \unhbox\@atxybox \hss}\vss}%
+  \global\let\@texttop\relax}
+
+\toks0={\setbox255=\vbox{\@useatxy \unvbox255}}
+\output=\expandafter{\the\toks0\the\output}
+
+\let\@ptitle\@empty
+\let\pauthors\@empty
+\let\paddresses\@empty
+
+
+%% to number author
+
+\newcounter{total@pauthors}
+\setcounter{total@pauthors}{0}
+
+\newcommand{\paddress}[1]{
+  \g@addto@macro\paddresses{\paddress{#1}}}
+
+
+\def\pauthor#1{
+  \stepcounter{total@pauthors}
+  \g@addto@macro\paddresses{\pauthor{#1}}}
+
+
+
+%% to number the addresses
+
+\newcounter{n@pauthor}
+\setcounter{n@pauthor}{0}
+
+\def\first@block{1}
+
+
+\def\@setpaddresses{%
+  \begingroup
+  \def\\{\unskip, \ignorespaces}
+  \def\pauthor##1{%
+    \fontsize{14.4}{11}
+    \selectfont
+    \stepcounter{n@pauthor}%
+    \ifnum\first@block = 1
+      \noindent\begin{center}%
+      \ifnum\then@pauthor=\thetotal@pauthors
+        \ifnum\thetotal@pauthors > 1
+          \par\noindent\centering and\relax
+        \fi
+      \fi
+      \def\first@block{0}
+      \vspace*{20pt}\par\noindent 
+      \ignorespaces##1\relax
+    \else
+      \ifnum\then@pauthor=\thetotal@pauthors
+        {\space and\space##1}\relax
+      \else
+        {,\space##1}\relax
+      \fi
+    \fi
+    \normalsize
+  }
+  \def\paddress##1{%
+    \vspace{10pt}\par\noindent\centering\relax
+    {\ignorespaces\nobreak##1\unskip}
+    \def\first@block{1}
+    \end{center}%
+    \par\vspace{10pt}
+  }
+  \paddresses
+  \endgroup
+}
+
+
+\def\ptitle#1{
+  \def\@ptitle{#1}}
+
+
+\def\@setptitle{\begin{center}%
+    \baselineskip14\p@\relax
+    \bfseries
+    \fontsize{25}{18}
+    \selectfont
+    \@ptitle
+    \vspace{40pt}
+  \end{center}%
+}
+
+
+\let\@pnr\@empty
+\let\@pdate\today
+
+\def\pnumber#1{
+  \def\@pnr{#1}
+}
+
+\def\pdate#1{
+  \def\@pdate{#1}
+}
+
+\let\orig@maketitle\maketitle
+
+\def\maketitle{
+  \@pmaketitle
+  \orig@maketitle
+}
+
+\def\@pmaketitle{%
+  \thispagestyle{empty}
+  \atxy(3cm,3cm){%
+  \begin{minipage}[c][24cm][s]{15cm}
+  \noindent
+  Rapport de recherche du CERMICS
+  \ifx\@empty\@pnr\else \space NR:\space \@pnr \fi
+  \hfill \@pdate\relax
+  \newline
+  \vspace{4pt}\noindent\rule{\linewidth}{1pt}
+  \vfill
+  \@setptitle
+  \ifx\@empty\paddresses\else \@setpaddresses\fi
+  \vfill
+  \normalsize
+  \noindent
+  \begin{center}
+    CERMICS \textemdash\ ENPC\\%
+    6 et 8 avenue Blaise Pascal\\%
+    Cité Descartes - Champs sur Marne\\%
+    77455 Marne la Vallée Cedex 2%
+  \end{center}
+  \vspace*{10pt}
+  \centerline{http://cermics.enpc.fr}
+  \end{minipage}
+  }%
+  \vfill
+  \null
+  \newpage
+  \thispagestyle{empty}
+  \null
+  \newpage
+  \setcounter{page}{1}
+} 
+
+\endinput
