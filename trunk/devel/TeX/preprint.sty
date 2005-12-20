@@ -13,7 +13,7 @@
 %%    et ainsi de suite pour les autres auteurs.                       %%
 %% Si plusieurs auteurs ont la même adresse, alors on déclare          %%
 %% d'abord les noms de auteurs ayant la même adresse et ensuite        %%
-%% leur adresses communeseveral authors have the same address.         %%
+%% leur adresses communes                                              %%
 %% \pauthor{author name 1}                                             %%
 %% \pauthor{author name 2}                                             %%
 %% \pauthor{author name 3}                                             %%
@@ -22,9 +22,6 @@
 %% Déclarer le titre avec la commande                                  %%
 %%     \ptitle{titre de l'article}                                     %%
 %%                                                                     %%
-%% Déclarer la date                                                    %%
-%%     \date{Mois année}                                               %%
-%% si \pdate n'est pas fournie alors \today est utilisé                %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -53,96 +50,109 @@
 \output=\expandafter{\the\toks0\the\output}
 
 \let\@ptitle\@empty
-\let\pauthors\@empty
-\let\paddresses\@empty
+\let\@pauthors\@empty
+\let\@paddresses\@empty
+\let\@pnr\@empty
+\def\@pdate{\number\day}
+
+
+\newcommand{\pmonthname}[1]{%
+\ifcase#1
+\or Janvier%
+\or Février%
+\or Mars%
+\or Avril%
+\or Mai%
+\or Juin%
+\or Juillet%
+\or Août%
+\or Septembre%
+\or Octobre%
+\or Novembre%
+\or Décembre%
+\fi}
+
+
+\def\@pdate{\pmonthname{\month}\space\number\year}
+
+%%font definitions
+\def\ptitle@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{b}\fontshape{n}\fontsize{25}{30pt}\selectfont}
+
+\def\pauthor@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{14.4}{18pt}\selectfont}
+
+\def\paddress@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{it}\fontsize{12}{13.6pt}\selectfont}
+
+\def\pnormal@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{12}{13.6pt}\selectfont}
+
+
+\def\pheader@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{10}{12pt}\selectfont}
+
 
 
 %% to number author
 
 \newcounter{total@pauthors}
 \setcounter{total@pauthors}{0}
-
-\newcommand{\paddress}[1]{
-  \g@addto@macro\paddresses{\paddress{#1}}}
-
-
-\def\pauthor#1{
-  \stepcounter{total@pauthors}
-  \g@addto@macro\paddresses{\pauthor{#1}}}
-
-
-
-%% to number the addresses
-
 \newcounter{n@pauthor}
 \setcounter{n@pauthor}{0}
 
-\def\first@block{1}
+\def\paddress#1{
+  \g@addto@macro\@paddresses{\paddress{#1}}}
 
-
-\def\@setpaddresses{%
-  \begingroup
-  \def\\{\unskip, \ignorespaces}
-  \def\pauthor##1{%
-    \fontsize{14.4}{11}
-    \selectfont
-    \stepcounter{n@pauthor}%
-    \ifnum\first@block = 1
-      \noindent\begin{center}%
-      \ifnum\then@pauthor=\thetotal@pauthors
-        \ifnum\thetotal@pauthors > 1
-          \par\noindent\centering and\relax
-        \fi
-      \fi
-      \def\first@block{0}
-      \vspace*{20pt}\par\noindent 
-      \ignorespaces##1\relax
-    \else
-      \ifnum\then@pauthor=\thetotal@pauthors
-        {\space and\space##1}\relax
-      \else
-        {,\space##1}\relax
-      \fi
-    \fi
-    \normalsize
-  }
-  \def\paddress##1{%
-    \vspace{10pt}\par\noindent\centering\relax
-    {\ignorespaces\nobreak##1\unskip}
-    \def\first@block{1}
-    \end{center}%
-    \par\vspace{10pt}
-  }
-  \paddresses
-  \endgroup
-}
-
+\def\pauthor#1{
+  \stepcounter{total@pauthors}
+  \g@addto@macro\@paddresses{\pauthor{#1}}}
 
 \def\ptitle#1{
   \def\@ptitle{#1}}
-
-
-\def\@setptitle{\begin{center}%
-    \baselineskip14\p@\relax
-    \bfseries
-    \fontsize{25}{18}
-    \selectfont
-    \@ptitle
-    \vspace{40pt}
-  \end{center}%
-}
-
-
-\let\@pnr\@empty
-\let\@pdate\today
 
 \def\pnumber#1{
   \def\@pnr{#1}
 }
 
-\def\pdate#1{
-  \def\@pdate{#1}
+\def\first@block{1}
+
+\def\@setpaddresses{%
+  \begingroup%
+  \def\pauthor##1{%
+    \stepcounter{n@pauthor}%
+    \ifnum\first@block = 1%
+      \nobreak\noindent\begin{center}%
+      \ifnum\then@pauthor=\thetotal@pauthors%
+        \ifnum\thetotal@pauthors>1
+          {\pnormal@font \par\noindent \ignorespaces \&\unskip}\fi
+      \fi
+      \vspace*{20pt}{\pauthor@font \par\nobreak\noindent\ignorespaces##1}%
+      \def\first@block{0}%
+    \else
+      \ifnum\then@pauthor=\thetotal@pauthors {\pauthor@font \space \&\space##1}%
+      \else {\pauthor@font ,\space##1}\fi
+    \fi
+  }%
+  \def\paddress##1{%
+    \vspace{10pt}\par\noindent {\paddress@font ##1}
+    \def\first@block{1}%
+    \end{center}%
+    \vspace{10pt}%
+  }%
+  \@paddresses
+  \endgroup
 }
+
+
+\def\@setptitle{
+  {\ptitle@font
+    \begin{center}
+      \@ptitle
+    \end{center}
+  \vspace*{40pt}}
+}
+
 
 \let\orig@maketitle\maketitle
 
@@ -152,30 +162,32 @@
 }
 
 \def\@pmaketitle{%
+  {\pnormal@font
   \thispagestyle{empty}
   \atxy(3cm,3cm){%
-  \begin{minipage}[c][24cm][s]{15cm}
-  \noindent
-  Rapport de recherche du CERMICS
-  \ifx\@empty\@pnr\else \space NR:\space \@pnr \fi
-  \hfill \@pdate\relax
-  \newline
-  \vspace{4pt}\noindent\rule{\linewidth}{1pt}
-  \vfill
-  \@setptitle
-  \ifx\@empty\paddresses\else \@setpaddresses\fi
-  \vfill
-  \normalsize
-  \noindent
-  \begin{center}
-    CERMICS \textemdash\ ENPC\\%
-    6 et 8 avenue Blaise Pascal\\%
-    Cité Descartes - Champs sur Marne\\%
-    77455 Marne la Vallée Cedex 2%
-  \end{center}
-  \vspace*{10pt}
-  \centerline{http://cermics.enpc.fr}
-  \end{minipage}
+    \begin{minipage}[c][24.5cm][s]{15cm}
+      {\pheader@font
+        \nobreak\noindent
+        Rapport de recherche du CERMICS
+        \ifx\@empty\@pnr\else \space NR:\space \@pnr \fi
+        \hfill \@pdate
+        \newline
+        \vspace{4pt}\noindent\rule{\linewidth}{1pt}
+        \vfill}
+      \@setptitle
+      \ifx\@empty\paddresses\else \@setpaddresses\fi
+      {\paddress@font
+      \vfill
+      \noindent
+        \begin{center}
+          CERMICS \textemdash\ ENPC\\%
+          6 et 8 avenue Blaise Pascal\\%
+          Cité Descartes - Champs sur Marne\\%
+          77455 Marne la Vallée Cedex 2%
+          \vspace*{10pt}
+          \centerline{http://cermics.enpc.fr}
+        \end{center}}
+    \end{minipage}
   }%
   \vfill
   \null
@@ -184,6 +196,8 @@
   \null
   \newpage
   \setcounter{page}{1}
+  }
+  \normalsize%  
 } 
 
 \endinput
