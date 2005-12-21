@@ -122,12 +122,12 @@
   \def\pauthor##1{%
     \stepcounter{n@pauthor}%
     \ifnum\first@block = 1%
-      \nobreak\noindent\begin{center}%
+      \nobreak\noindent
       \ifnum\then@pauthor=\thetotal@pauthors%
         \ifnum\thetotal@pauthors>1
-          {\pnormal@font \par\noindent \ignorespaces \&\unskip}\fi
+          {\pnormal@font \par\noindent\ignorespaces\&\unskip}\fi
       \fi
-      \vspace*{20pt}{\pauthor@font \par\nobreak\noindent\ignorespaces##1}%
+      \vspace*{15pt}{\pauthor@font \par\nobreak\noindent\ignorespaces##1}%
       \def\first@block{0}%
     \else
       \ifnum\then@pauthor=\thetotal@pauthors {\pauthor@font \space \&\space##1}%
@@ -137,8 +137,7 @@
   \def\paddress##1{%
     \vspace{10pt}\par\noindent {\paddress@font ##1}
     \def\first@block{1}%
-    \end{center}%
-    \vspace{10pt}%
+    \vspace*{15pt}%
   }%
   \@paddresses
   \endgroup
@@ -165,7 +164,7 @@
   {\pnormal@font
   \thispagestyle{empty}
   \atxy(3cm,3cm){%
-    \begin{minipage}[c][24.5cm][s]{15cm}
+    \begin{minipage}[c][24.5cm][t]{15cm}
       {\pheader@font
         \nobreak\noindent
         Rapport de recherche du CERMICS
@@ -173,11 +172,13 @@
         \hfill \@pdate
         \newline
         \vspace{4pt}\noindent\rule{\linewidth}{1pt}
-        \vfill}
+        \vspace{\stretch{1}}}%
+      \begin{center}%
       \@setptitle
       \ifx\@empty\paddresses\else \@setpaddresses\fi
+      \end{center}%
       {\paddress@font
-      \vfill
+      \vspace{\stretch{1}}%
       \noindent
         \begin{center}
           CERMICS \textemdash\ ENPC\\%
@@ -189,7 +190,6 @@
         \end{center}}
     \end{minipage}
   }%
-  \vfill
   \null
   \newpage
   \thispagestyle{empty}
