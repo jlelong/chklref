@@ -1,0 +1,204 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Jérôme LELONG                                                       %% 
+%% CERMICS (ENPC)                                                      %%
+%% http://cermics.enpc.fr/~lelong                                      %%
+%% Ce paquet permet de rajouter une page de garde aux preprints        %%
+%% du CERMICS.                                                         %%
+%% Utilisation:                                                        %%
+%% rajouter dans l'en-tête du.tex                                      %%
+%%     \usepackage{preprint}                                           %%
+%% puis avant la commande \maketitle                                   %%
+%%      \pauthor{first author's name}                                  %%
+%%      \paddress{first author's address}                              %%
+%%    et ainsi de suite pour les autres auteurs.                       %%
+%% Si plusieurs auteurs ont la même adresse, alors on déclare          %%
+%% d'abord les noms de auteurs ayant la même adresse et ensuite        %%
+%% leur adresses communes                                              %%
+%% \pauthor{author name 1}                                             %%
+%% \pauthor{author name 2}                                             %%
+%% \pauthor{author name 3}                                             %%
+%% \paddress{common address of authors 1, 2 and 3}                     %%
+%%                                                                     %%
+%% Déclarer le titre avec la commande                                  %%
+%%     \ptitle{titre de l'article}                                     %%
+%%                                                                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\ProvidesPackage{preprint}[19/12/2005 revision 1.2 by Jérôme LELONG]
+\NeedsTeXFormat{LaTeX2e}
+
+
+
+%% for details on atxy see
+%% http://www-sop.inria.fr/apics/tralics/raweb.html
+%%
+\newbox\@atxybox%
+\def\atxy(#1,#2)#3{\global\setbox\@atxybox=\hbox%
+ {\unhbox\@atxybox
+  \vtop to 0pt{\kern #2\hbox to 0pt{\kern #1\relax #3\hss}\vss}}}%
+
+\def\@useatxy{%
+  \vtop to 0pt{\kern-\headsep \kern-\topmargin \kern-\headheight
+               \kern-1in \kern-\voffset
+    \hbox to 0pt{\kern-\@themargin \kern-1in \kern-\hoffset
+    \unhbox\@atxybox \hss}\vss}%
+  \global\let\@texttop\relax}
+
+\toks0={\setbox255=\vbox{\@useatxy \unvbox255}}
+\output=\expandafter{\the\toks0\the\output}
+
+\let\@ptitle\@empty
+\let\@pauthors\@empty
+\let\@paddresses\@empty
+\let\@pnr\@empty
+\def\@pdate{\number\day}
+
+
+\newcommand{\pmonthname}[1]{%
+\ifcase#1
+\or Janvier%
+\or Février%
+\or Mars%
+\or Avril%
+\or Mai%
+\or Juin%
+\or Juillet%
+\or Août%
+\or Septembre%
+\or Octobre%
+\or Novembre%
+\or Décembre%
+\fi}
+
+
+\def\@pdate{\pmonthname{\month}\space\number\year}
+
+%%font definitions
+\def\ptitle@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{b}\fontshape{n}\fontsize{25}{30pt}\selectfont}
+
+\def\pauthor@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{14.4}{18pt}\selectfont}
+
+\def\paddress@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{it}\fontsize{12}{13.6pt}\selectfont}
+
+\def\pnormal@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{12}{13.6pt}\selectfont}
+
+
+\def\pheader@font
+{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{10}{12pt}\selectfont}
+
+
+
+%% to number author
+
+\newcounter{total@pauthors}
+\setcounter{total@pauthors}{0}
+\newcounter{n@pauthor}
+\setcounter{n@pauthor}{0}
+
+\def\paddress#1{
+  \g@addto@macro\@paddresses{\paddress{#1}}}
+
+\def\pauthor#1{
+  \stepcounter{total@pauthors}
+  \g@addto@macro\@paddresses{\pauthor{#1}}}
+
+\def\ptitle#1{
+  \def\@ptitle{#1}}
+
+\def\pnumber#1{
+  \def\@pnr{#1}
+}
+
+\def\first@block{1}
+
+\def\@setpaddresses{%
+  \begingroup%
+  \def\pauthor##1{%
+    \stepcounter{n@pauthor}%
+    \ifnum\first@block = 1%
+      \nobreak\noindent
+      \ifnum\then@pauthor=\thetotal@pauthors%
+        \ifnum\thetotal@pauthors>1
+          {\pnormal@font \par\noindent\ignorespaces\&\unskip}\fi
+      \fi
+      \vspace*{15pt}{\pauthor@font \par\nobreak\noindent\ignorespaces##1}%
+      \def\first@block{0}%
+    \else
+      \ifnum\then@pauthor=\thetotal@pauthors {\pauthor@font \space \&\space##1}%
+      \else {\pauthor@font ,\space##1}\fi
+    \fi
+  }%
+  \def\paddress##1{%
+    \vspace{10pt}\par\noindent {\paddress@font ##1}
+    \def\first@block{1}%
+    \vspace*{15pt}%
+  }%
+  \@paddresses
+  \endgroup
+}
+
+
+\def\@setptitle{
+  {\ptitle@font
+    \begin{center}
+      \@ptitle
+    \end{center}
+  \vspace*{40pt}}
+}
+
+
+\let\orig@maketitle\maketitle
+
+\def\maketitle{
+  \@pmaketitle
+  \orig@maketitle
+}
+
+\def\@pmaketitle{%
+  {\pnormal@font
+  \thispagestyle{empty}
+  \atxy(3cm,3cm){%
+    \begin{minipage}[c][24.5cm][s]{15cm}
+      {\pheader@font
+        \nobreak\noindent
+        Rapport de recherche du CERMICS
+        \ifx\@empty\@pnr\else \space NR:\space \@pnr \fi
+        \hfill \@pdate
+        \newline
+        \vspace{4pt}\noindent\rule{\linewidth}{1pt}
+        \vfill}
+      \begin{center}%
+      \@setptitle
+      \ifx\@empty\paddresses\else \@setpaddresses\fi
+      \end{center}%
+      {\paddress@font
+      \vfill
+      \noindent
+        \begin{center}
+          CERMICS \textemdash\ ENPC\\%
+          6 et 8 avenue Blaise Pascal\\%
+          Cité Descartes - Champs sur Marne\\%
+          77455 Marne la Vallée Cedex 2%
+          \vspace*{10pt}
+          \centerline{http://cermics.enpc.fr}
+        \end{center}}
+    \end{minipage}
+  }%
+  \vfill
+  \null
+  \newpage
+  \thispagestyle{empty}
+  \null
+  \newpage
+  \setcounter{page}{1}
+  }
+  \normalsize%  
+} 
+
+\endinput
