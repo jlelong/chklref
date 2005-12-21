@@ -8,16 +8,20 @@
 %% rajouter dans l'en-tête du.tex                                      %%
 %%     \usepackage{preprint}                                           %%
 %% puis avant la commande \maketitle                                   %%
-%%      \pauthor{first author's name}                                  %%
-%%      \paddress{first author's address}                              %%
+%%      \pauthor[1]{premier auteur}                                    %%
+%%      \paddress[1]{adresse premier auteur}                           %%
 %%    et ainsi de suite pour les autres auteurs.                       %%
-%% Si plusieurs auteurs ont la même adresse, alors on déclare          %%
+%% Si l'auteur  a la même adresse que l'auteur 1, alors on déclare     %%
 %% d'abord les noms de auteurs ayant la même adresse et ensuite        %%
-%% leur adresses communes                                              %%
-%% \pauthor{author name 1}                                             %%
-%% \pauthor{author name 2}                                             %%
-%% \pauthor{author name 3}                                             %%
-%% \paddress{common address of authors 1, 2 and 3}                     %%
+%% \pauthor[1]{second auteur}.                                         %%
+%%                                                                     %%
+%% Si un auteur a une adresse commune avec un autre et une             %%
+%% adresse propre, alors on utilisera                                  %%
+%% \pauthor[1,2]{auteur 3}                                             %%
+%% \paddress[2]{adresse propre de l'auteur 3}                          %%
+%%                                                                     %%
+%% L'ordre d'apparition des commandes \pautthor et \paddress           %%
+%% importe peu.                                                        %%
 %%                                                                     %%
 %% Déclarer le titre avec la commande                                  %%
 %%     \ptitle{titre de l'article}                                     %%
@@ -25,8 +29,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-\ProvidesPackage{preprint}[19/12/2005 revision 1.2 by Jérôme LELONG]
+\ProvidesPackage{preprint}[21/12/2005 revision 1.1 by Jérôme LELONG]
 \NeedsTeXFormat{LaTeX2e}
 
 
@@ -98,16 +101,18 @@
 
 \newcounter{total@pauthors}
 \setcounter{total@pauthors}{0}
-\newcounter{n@pauthor}
-\setcounter{n@pauthor}{0}
+\newcounter{n@pauthors}
+\setcounter{n@pauthors}{0}
 
-\def\paddress#1{
-  \g@addto@macro\@paddresses{\paddress{#1}}}
+\newcommand{\paddress}[2][]{
+  \g@addto@macro\@paddresses{\paddress{#1}{#2}}}
 
-\def\pauthor#1{
+\newcommand{\pauthor}[2][]{
   \stepcounter{total@pauthors}
-  \g@addto@macro\@paddresses{\pauthor{#1}}}
+  \g@addto@macro\@pauthors{\pauthor{#1}{#2}}}
 
+
+  
 \def\ptitle#1{
   \def\@ptitle{#1}}
 
@@ -115,41 +120,45 @@
   \def\@pnr{#1}
 }
 
-\def\first@block{1}
-
 \def\@setpaddresses{%
   \begingroup%
-  \def\pauthor##1{%
-    \stepcounter{n@pauthor}%
-    \ifnum\first@block = 1%
-      \nobreak\noindent
-      \ifnum\then@pauthor=\thetotal@pauthors%
-        \ifnum\thetotal@pauthors>1
-          {\pnormal@font \par\noindent\ignorespaces\&\unskip}\fi
-      \fi
-      \vspace*{15pt}{\pauthor@font \par\nobreak\noindent\ignorespaces##1}%
-      \def\first@block{0}%
-    \else
-      \ifnum\then@pauthor=\thetotal@pauthors {\pauthor@font \space \&\space##1}%
-      \else {\pauthor@font ,\space##1}\fi
-    \fi
-  }%
-  \def\paddress##1{%
-    \vspace{10pt}\par\noindent {\paddress@font ##1}
-    \def\first@block{1}%
+  \def\paddress##1##2{%
     \vspace*{15pt}%
+    \par\noindent {\paddress@font %
+    \@ifnotempty{##1}{$^{##1}$}%
+    ##2}
   }%
   \@paddresses
   \endgroup
 }
 
+\def\@setpauthors{%
+  \begingroup%
+  {\setlength{\baselineskip}{28pt}%
+  \def\pauthor##1##2{%
+    \stepcounter{n@pauthors}%
+    \ifnum\then@pauthors=\thetotal@pauthors%
+       \ifnum\thetotal@pauthors>1%
+         {\pnormal@font \space\&~}\fi
+    \else
+      \ifnum\then@pauthors>1%
+        {\pauthor@font,\space}\fi
+    \fi
+    {\pauthor@font ##2%
+      \@ifnotempty{##1}{$^{##1}$\relax}}%
+  }%
+  \@pauthors
+  \par}%
+  \endgroup
+}
+
+
 
 \def\@setptitle{
   {\ptitle@font
-    \begin{center}
-      \@ptitle
-    \end{center}
-  \vspace*{40pt}}
+    \@ptitle
+    \par
+    \vspace*{50pt}}
 }
 
 
@@ -164,7 +173,7 @@
   {\pnormal@font
   \thispagestyle{empty}
   \atxy(3cm,3cm){%
-    \begin{minipage}[c][24.5cm][s]{15cm}
+    \begin{minipage}[c][24.5cm][t]{15cm}
       {\pheader@font
         \nobreak\noindent
         Rapport de recherche du CERMICS
@@ -172,13 +181,15 @@
         \hfill \@pdate
         \newline
         \vspace{4pt}\noindent\rule{\linewidth}{1pt}
-        \vfill}
+        \vspace{\stretch{1}}}%
       \begin{center}%
       \@setptitle
+      \ifx\@empty\pauthors\else \@setpauthors\fi
+      \end{center}
+      \vspace{\stretch{1}}
       \ifx\@empty\paddresses\else \@setpaddresses\fi
-      \end{center}%
       {\paddress@font
-      \vfill
+      \vspace{60pt}%
       \noindent
         \begin{center}
           CERMICS \textemdash\ ENPC\\%
@@ -190,7 +201,6 @@
         \end{center}}
     \end{minipage}
   }%
-  \vfill
   \null
   \newpage
   \thispagestyle{empty}
