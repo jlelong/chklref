@@ -1,0 +1,179 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Jérôme LELONG                                                       %% 
+%% CERMICS (ENPC)                                                      %%
+%% http://cermics.enpc.fr/~lelong                                      %%
+%% this little package enables to print both mail and email addresses  %%
+%% as footnotes on the first page while using amsart class             %%
+%% use it as follows                                                   %%
+%% \author[name to appear on the header]{first author's name}          %%
+%% \address{first author's address}                                    %%
+%% \email{first author's email address}                                %%
+%% if \author is given only one argument then the name to appear on    %%
+%% the header of odd pages is set to the author's name.                %%
+%%                                                                     %%
+%% If several authors have the same address. You can use               %% 
+%% \author[header name of author1]{author name 1}                      %%
+%% \author[header name of author2]{author name 2}                      %%
+%% \author[header name of author3]{author name 3}                      %%
+%% \address{common address of authors 1, 2 and 3}                      %%
+%% In this case all these authors will have the same number.           %%
+%%                                                                     %%
+%% The email declaration can be put anywhere before \maketitle.        %%
+%% emails address are printed in a list manner as footnotes on the     %%
+%% first page.                                                         %%
+%% The authors are numbered and a reference as are the addresses,      %%
+%% which appear as footnotes on the first page.                        %%
+%% You have to run LaTeX twice                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\ProvidesPackage{footaddr}[19/12/2005 revision 1.2 by Jérôme LELONG]
+\NeedsTeXFormat{LaTeX2e}
+\usepackage{ifthen}
+\ifthenelse{\equal{\@classname}{amsart}}{%then
+  \relax}{%else
+  \PackageError{footaddr}{Package footaddr is only for use with \MessageBreak
+    amsart class document}%
+  {Do not load footaddr - you don't need it.}
+}
+
+%%\makeatletter
+
+\ifx\protected@edef\@undefined
+  \let\protected@edef\edef
+\fi
+
+\def\total@author@{1} %% read from .aux
+
+
+%% to number author
+
+\newcounter{n@author}
+\setcounter{n@author}{1}
+
+\newcounter{g@author}
+\setcounter{g@author}{0}
+
+
+\renewcommand{\address}[2][]{
+  \stepcounter{n@author}
+  \g@addto@macro\addresses{\address{#1}{#2}}}
+
+\renewcommand{\author}[2][]{\author@optarg[#1]{#2}}
+
+\let\emails\@empty
+
+%% mbox prevents emails from being hyphened
+\renewcommand{\email}[2][]{
+  \ifx\@empty\emails
+    \gdef\emails{\mbox{#2}}
+  \else
+    \g@addto@macro\emails{,\space\mbox{#2}}
+  \fi
+}
+
+\def\author@optarg[#1]#2{
+  \stepcounter{g@author}
+  \edef\v@author{\arabic{n@author}}
+  \ifnum \total@author@ > \theg@author
+    \edef\et{,~}
+  \else
+    \edef\et{ and~}
+  \fi
+  \ifx\@empty\authors
+    \edef\authors{#2$^\v@author$}%
+  \else
+    \edef\authors{\expandafter\authors\et#2$^{\v@author}$}
+  \fi
+  \@ifnotempty{#1}{%
+    \ifx\@empty\shortauthors
+      \gdef\shortauthors{#1}%
+    \else
+      \g@addto@macro\shortauthors{\and#1}%
+    \fi
+  }%
+}
+
+\edef\author{\@nx\@dblarg
+  \@xp\@nx\csname\string\author\endcsname}
+
+\def\@writecount{\write\@mainaux{\string\global
+  \string\@namedef{total@author@}{\theg@author}}}%
+
+
+%% to number the addresses
+
+\newcounter{n@address}
+\setcounter{n@address}{0}
+
+
+\def\@setaddresses{
+  \def\author##1{}
+  \nobreak\begingroup
+  \def\\{\unskip, \ignorespaces}%
+  \vspace*{-\@mainsize pt}
+  \def\address##1##2{%
+    \refstepcounter{n@address}
+    \par\indent%
+    \footnotetext{{\scshape$^\arabic{n@address}$\ignorespaces\nobreak##2\unskip}}}
+  \def\curraddr##1##2{\begingroup
+    \@ifnotempty{##2}{\nobreak\indent{\itshape Current address}%
+      \@ifnotempty{##1}{, \ignorespaces##1\unskip}\/:\space
+      ##2\par}\endgroup}%
+  \def\urladdr##1##2{\begingroup
+    \@ifnotempty{##2}{\nobreak\indent{\itshape URL}%
+      \@ifnotempty{##1}{, \ignorespaces##1\unskip}\/:\space
+      \ttfamily##2\par}\endgroup}%
+  \addresses
+  \endgroup
+}
+
+\def\@setemails{
+  \begingroup
+  \par
+  \ifnum\total@author@ > 1
+    \footnotetext{\mbox{{\itshape E-mail addresses}:\space}{\ttfamily\emails}.}
+  \else
+    \footnotetext{\mbox{{\itshape\space E-mail \space address}:\space}{\ttfamily\emails}.}
+  \fi
+  \endgroup
+}
+
+
+
+\def\@maketitle{%
+  \normalfont\normalsize
+  \let\@makefnmark\relax  \let\@thefnmark\relax
+  \ifx\@empty\addresses\else \@setaddresses\fi
+  \ifx\@empty\emails\else \@setemails\fi
+  \ifx\@empty\@date\else \@footnotetext{\@setdate}\fi
+  \ifx\@empty\@subjclass\else \@footnotetext{\@setsubjclass}\fi
+  \ifx\@empty\@keywords\else \@footnotetext{\@setkeywords}\fi
+  \ifx\@empty\thankses\else \@footnotetext{%
+    \def\par{\let\par\@par}\@setthanks}\fi
+  \@mkboth{\@nx\shortauthors}{\@nx\shorttitle}%
+  \global\topskip42\p@\relax % 5.5pc   "   "   "     "     "
+  \@settitle
+  \ifx\@empty\authors \else \@setauthors \fi
+  \@writecount
+  \ifx\@empty\@dedicatory
+  \else
+    \baselineskip18\p@
+    \vtop{\centering{\footnotesize\itshape\@dedicatory\@@par}%
+      \global\dimen@i\prevdepth}\prevdepth\dimen@i
+  \fi
+  \@setabstract
+  \normalsize
+  \if@titlepage
+    \newpage
+  \else
+    \dimen@34\p@ \advance\dimen@-\baselineskip
+    \vskip\dimen@\relax
+  \fi
+} % end \@maketitle
+
+\def\enddoc@text{}
+
+%%\makeatother
+\endinput
