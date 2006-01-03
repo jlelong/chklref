@@ -26,10 +26,12 @@
 %% Déclarer le titre avec la commande                                  %%
 %%     \ptitle{titre de l'article}                                     %%
 %%                                                                     %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Rien n'est imprimé avant que vous n'invoquiez                       %%
+%%     \makeptitle (à mettre avant \maketitle)                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
 
 
-\ProvidesPackage{preprint}[21/12/2005 revision 1.1 by Jérôme LELONG]
+\ProvidesPackage{preprintcermics}[21/12/2005 revision 1.1 by Jérôme LELONG]
 \NeedsTeXFormat{LaTeX2e}
 
 
@@ -52,14 +54,13 @@
 \toks0={\setbox255=\vbox{\@useatxy \unvbox255}}
 \output=\expandafter{\the\toks0\the\output}
 
-\let\@ptitle\@empty
-\let\@pauthors\@empty
-\let\@paddresses\@empty
-\let\@pnr\@empty
-\def\@pdate{\number\day}
+\let\@cermicstitle\@empty
+\let\@cermicsauthors\@empty
+\let\@cermicsaddresses\@empty
+\def\@cermicsdate{\number\day}
 
 
-\newcommand{\pmonthname}[1]{%
+\newcommand{\cermicsmonthname}[1]{%
 \ifcase#1
 \or Janvier%
 \or Février%
@@ -76,119 +77,113 @@
 \fi}
 
 
-\def\@pdate{\pmonthname{\month}\space\number\year}
+\def\@cermicsdate{\cermicsmonthname{\month}\space\number\year}
 
 %%font definitions
-\def\ptitle@font
+\def\cermicstitle@font
 {\fontfamily{cmr}\fontencoding{T1}\fontseries{b}\fontshape{n}\fontsize{25}{30pt}\selectfont}
 
-\def\pauthor@font
+\def\cermicsauthor@font
 {\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{14.4}{18pt}\selectfont}
 
-\def\paddress@font
+\def\cermicsaddress@font
 {\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{it}\fontsize{12}{13.6pt}\selectfont}
 
-\def\pnormal@font
+\def\cermicsnormal@font
 {\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{12}{13.6pt}\selectfont}
 
 
-\def\pheader@font
+\def\cermicsheader@font
 {\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{10}{12pt}\selectfont}
 
 
 
 %% to number author
 
-\newcounter{total@pauthors}
-\setcounter{total@pauthors}{0}
-\newcounter{n@pauthors}
-\setcounter{n@pauthors}{0}
+\newcounter{total@cermicsauthors}
+\setcounter{total@cermicsauthors}{0}
+\newcounter{n@cermicsauthors}
+\setcounter{n@cermicsauthors}{0}
 
-\newcommand{\paddress}[2][]{
-  \g@addto@macro\@paddresses{\paddress{#1}{#2}}}
+\newcommand{\cermicsaddress}[2][]{
+  \g@addto@macro\@cermicsaddresses{\cermicsaddress{#1}{#2}}}
 
-\newcommand{\pauthor}[2][]{
-  \stepcounter{total@pauthors}
-  \g@addto@macro\@pauthors{\pauthor{#1}{#2}}}
+\newcommand{\cermicsauthor}[2][]{
+  \stepcounter{total@cermicsauthors}
+  \g@addto@macro\@cermicsauthors{\cermicsauthor{#1}{#2}}}
 
 
   
-\def\ptitle#1{
-  \def\@ptitle{#1}}
+\def\cermicstitle#1{
+  \def\@cermicstitle{#1}}
 
-\def\pnumber#1{
-  \def\@pnr{#1}
-}
 
-\def\@setpaddresses{%
+\def\@setcermicsaddresses{%
   \begingroup%
-  \def\paddress##1##2{%
+  \def\cermicsaddress##1##2{%
     \vspace*{15pt}%
-    \par\noindent {\paddress@font %
-    \@ifnotempty{##1}{$^{##1}$}%
+    \par\noindent {\cermicsaddress@font %
+    \ifx\@empty##1 \else $^{##1}$\fi
     ##2}
   }%
-  \@paddresses
+  \@cermicsaddresses
   \endgroup
 }
 
-\def\@setpauthors{%
+\def\@setcermicsauthors{%
   \begingroup%
   {\setlength{\baselineskip}{28pt}%
-  \def\pauthor##1##2{%
-    \stepcounter{n@pauthors}%
-    \ifnum\then@pauthors=\thetotal@pauthors%
-       \ifnum\thetotal@pauthors>1%
-         {\pnormal@font \space\&~}\fi
+  \def\cermicsauthor##1##2{%
+    \stepcounter{n@cermicsauthors}%
+    \ifnum\then@cermicsauthors=\thetotal@cermicsauthors%
+       \ifnum\thetotal@cermicsauthors>1%
+         {\cermicsnormal@font \space\&~}\fi
     \else
-      \ifnum\then@pauthors>1%
-        {\pauthor@font,\space}\fi
+      \ifnum\then@cermicsauthors>1%
+        {\cermicsauthor@font,\space}\fi
     \fi
-    {\pauthor@font ##2%
-      \@ifnotempty{##1}{$^{##1}$}}%
+    {\cermicsauthor@font ##2%
+      \ifx\@empty##1\else $^{##1}$\fi}%
   }%
-  \@pauthors
+  \@cermicsauthors
   \par}%
   \endgroup
 }
 
 
 
-\def\@setptitle{
-  {\ptitle@font
-    \@ptitle
+\def\@setcermicstitle{
+  {\cermicstitle@font
+    \@cermicstitle
     \par
     \vspace*{50pt}}
 }
 
 
-\let\orig@maketitle\maketitle
 
-\def\maketitle{
-  \@pmaketitle
-  \orig@maketitle
+\def\makecermicstitle{
+  \@cermicsmaketitle
 }
 
-\def\@pmaketitle{%
-  {\pnormal@font
+\def\@cermicsmaketitle{%
+  {\cermicsnormal@font
   \thispagestyle{empty}
   \atxy(3cm,3cm){%
     \begin{minipage}[c][24.5cm][t]{15cm}
-      {\pheader@font
+      {\cermicsheader@font
         \nobreak\noindent
         Rapport de recherche du CERMICS
-        \ifx\@empty\@pnr\else \space NR:\space \@pnr \fi
-        \hfill \@pdate
+        \hfill \@cermicsdate
         \newline
         \vspace{4pt}\noindent\rule{\linewidth}{1pt}
         \vspace{\stretch{1}}}%
       \begin{center}%
-      \@setptitle
-      \ifx\@empty\pauthors\else \@setpauthors\fi
+      \@setcermicstitle
+      \ifx\@empty\cermicsauthors\else \@setcermicsauthors\fi
       \end{center}
       \vspace{\stretch{1}}
-      \ifx\@empty\paddresses\else \@setpaddresses\fi
-      {\paddress@font
+      \ifx\@empty\cermicsaddresses\else \@setcermicsaddresses\fi
+      {\cermicsaddress@font
       \vspace{60pt}%
       \noindent
         \begin{center}
