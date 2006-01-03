@@ -6,34 +6,32 @@
 %% du CERMICS.                                                         %%
 %% Utilisation:                                                        %%
 %% rajouter dans l'en-tête du.tex                                      %%
-%%     \usepackage{preprint}                                           %%
+%%     \usepackage{preprintcermics}                                    %%
 %% puis avant la commande \maketitle                                   %%
-%%      \pauthor[1]{premier auteur}                                    %%
-%%      \paddress[1]{adresse premier auteur}                           %%
+%%      \cermicsauthor[1]{premier auteur}                              %%
+%%      \cermicsaddress[1]{adresse premier auteur}                     %%
 %%    et ainsi de suite pour les autres auteurs.                       %%
-%% Si l'auteur  a la même adresse que l'auteur 1, alors on déclare     %%
-%% d'abord les noms de auteurs ayant la même adresse et ensuite        %%
-%% \pauthor[1]{second auteur}.                                         %%
 %%                                                                     %%
 %% Si un auteur a une adresse commune avec un autre et une             %%
 %% adresse propre, alors on utilisera                                  %%
-%% \pauthor[1,2]{auteur 3}                                             %%
-%% \paddress[2]{adresse propre de l'auteur 3}                          %%
+%% \cermicsauthor[1,2]{auteur 3}                                       %%
+%% \cermicsaddress[2]{adresse propre de l'auteur 3}                    %%
 %%                                                                     %%
 %% L'ordre d'apparition des commandes \pautthor et \paddress           %%
 %% importe peu.                                                        %%
 %%                                                                     %%
 %% Déclarer le titre avec la commande                                  %%
-%%     \ptitle{titre de l'article}                                     %%
+%%     \cermicstitle{titre de l'article}                               %%
 %%                                                                     %%
 %% Rien n'est imprimé avant que vous n'invoquiez                       %%
-%%     \makeptitle (à mettre avant \maketitle)                         %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
+%%     \makecermicstitle (à mettre avant \maketitle)                   %%
+%% Pour plus d'explications voir l'exemple                             %%
+%% http://cermics.enpc.fr/~lelong/Latex/index.html                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 
-\ProvidesPackage{preprintcermics}[21/12/2005 revision 1.1 by Jérôme LELONG]
+\ProvidesPackage{preprintcermics}[03/01/2006 revision 1.2 by Jérôme LELONG]
 \NeedsTeXFormat{LaTeX2e}
-
 
 
 %% for details on atxy see
@@ -81,20 +79,25 @@
 
 %%font definitions
 \def\cermicstitle@font
-{\fontfamily{cmr}\fontencoding{T1}\fontseries{b}\fontshape{n}\fontsize{25}{30pt}\selectfont}
+{\fontfamily{cmr}\fontencoding{OT1}%
+  \fontseries{b}\fontshape{n}\fontsize{25}{30pt}\selectfont}
 
 \def\cermicsauthor@font
-{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{14.4}{18pt}\selectfont}
+{\fontfamily{cmr}\fontencoding{OT1}%
+  \fontseries{m}\fontshape{n}\fontsize{14.4}{18pt}\selectfont}
 
 \def\cermicsaddress@font
-{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{it}\fontsize{12}{13.6pt}\selectfont}
+{\fontfamily{cmr}\fontencoding{OT1}%
+  \fontseries{m}\fontshape{it}\fontsize{12}{13.6pt}\selectfont}
 
 \def\cermicsnormal@font
-{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{12}{13.6pt}\selectfont}
+{\fontfamily{cmr}\fontencoding{OT1}%
+  \fontseries{m}\fontshape{n}\fontsize{12}{13.6pt}\selectfont}
 
 
 \def\cermicsheader@font
-{\fontfamily{cmr}\fontencoding{T1}\fontseries{m}\fontshape{n}\fontsize{10}{12pt}\selectfont}
+{\fontfamily{cmr}\fontencoding{OT1}%
+  \fontseries{m}\fontshape{n}\fontsize{10}{12pt}\selectfont}
 
 
 
@@ -122,7 +125,7 @@
   \begingroup%
   \def\cermicsaddress##1##2{%
     \vspace*{15pt}%
-    \par\noindent {\cermicsaddress@font %
+    \par\noindent {\cermicsaddress@font%
     \ifx\@empty##1 \else $^{##1}$\fi
     ##2}
   }%
@@ -141,7 +144,7 @@
     \else
       \ifnum\then@cermicsauthors>1%
         {\cermicsauthor@font,\space}\fi
-    \fi
+    \fi%
     {\cermicsauthor@font ##2%
       \ifx\@empty##1\else $^{##1}$\fi}%
   }%
