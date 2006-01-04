@@ -33,7 +33,6 @@
 \ProvidesPackage{preprintcermics}[03/01/2006 revision 1.2 by Jérôme LELONG]
 \NeedsTeXFormat{LaTeX2e}
 
-
 %% for details on atxy see
 %% http://www-sop.inria.fr/apics/tralics/raweb.html
 %%
@@ -56,18 +55,18 @@
 \let\@cermicsauthors\@empty
 \let\@cermicsaddresses\@empty
 \def\@cermicsdate{\number\day}
-
+\let\@cermicsnr\@empty
 
 \newcommand{\cermicsmonthname}[1]{%
 \ifcase#1
 \or Janvier%
-\or Février%
+\or F\'{e}vrier%
 \or Mars%
 \or Avril%
 \or Mai%
 \or Juin%
 \or Juillet%
-\or Août%
+\or Ao\^{u}t%
 \or Septembre%
 \or Octobre%
 \or Novembre%
@@ -120,6 +119,9 @@
 \def\cermicstitle#1{
   \def\@cermicstitle{#1}}
 
+\def\cermicsnumber#1{
+  \def\@cermicsnr{#1}
+}
 
 \def\@setcermicsaddresses{%
   \begingroup%
@@ -176,6 +178,7 @@
       {\cermicsheader@font
         \nobreak\noindent
         Rapport de recherche du CERMICS
+        \ifx\@empty\@cermicsnr\else \space NR:\space \@cermicsnr \fi
         \hfill \@cermicsdate
         \newline
         \vspace{4pt}\noindent\rule{\linewidth}{1pt}
@@ -192,8 +195,8 @@
         \begin{center}
           CERMICS \textemdash\ ENPC\\%
           6 et 8 avenue Blaise Pascal\\%
-          Cité Descartes - Champs sur Marne\\%
-          77455 Marne la Vallée Cedex 2%
+          Cit\'{e} Descartes - Champs sur Marne\\%
+          77455 Marne la Vall\'{e}e Cedex 2%
           \vspace*{10pt}
           \centerline{http://cermics.enpc.fr}
         \end{center}}
