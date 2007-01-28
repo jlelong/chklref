@@ -20,7 +20,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<class>\ProvidesClass{amsaddr}
 %<*class>
-    [2006/11/05 v1.0 .dtx amsaddr file]
+    [2006/12/12 v1.0 .dtx amsaddr file]
 %</class>
 %
 %<*driver>
@@ -35,7 +35,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{329}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -68,9 +68,10 @@
 % \maketitle
 %
 % \begin{abstract}
-%   This package is intended to be used only with the \textsf{amsart} documentclass. It
-%   lets you move the authors' affiliations and emails either just below below the
-%   authors' names near the title or as footnotes on the first page.
+%   This package is intended to be used with the \textsf{amsart} documentclass only. It
+%   lets you move the authors' affiliations either just below below the
+%   authors' names on the front page or as footnotes on the first page. The email
+%   addresses are always listed as a footnote on the front page.
 % \end{abstract}
 %
 % \section{Usage}
@@ -78,9 +79,52 @@
 %
 % To use this package, you need to include the directive |\usepackage{amsaddr}| in your
 % |.tex| file. Alternatively, you may also use it with the |foot| option
-% |\usepackage[foot]{amsaddr}|. When using the |foot| option, the adress and email
-% material is put as footnotes on the first page of the document.
+% |\usepackage[foot]{amsaddr}|. When using the |foot| option, the adresses are put as
+% footnotes on the first page of the document.
+%
+% A typical usage looks like the following
+%
+% \begin{verbatim}
+% \author{author one and author two}
+% \address{common address of authors one and two}
 % 
+% \author{author three}
+% \address{author three address}
+% 
+% \email{list of emails}
+% \end{verbatim}
+% 
+% If |amsaddr| is used without the |foot| option, the addresses declared with the
+% |\address| command are printed just below the authors'names declared with the
+% preceeding |\author| command. The emails appear as a footnote list like this
+% \\
+% 
+% {\it E-mail addresses:} {\texttt{email one}, \texttt{email two}, and so on}
+% \\
+%
+% If the option |foot| was passed to the package, you may consider numbering
+% authors' names so that you can use numbered footnotes for the affiliations
+% 
+% \begin{verbatim}
+% \author{author one$^1$ and author two$^1$}
+% \address{$^1$common address of authors one and two}
+% 
+% \author{author three$^2$}
+% \address{$^2$author three address}
+% 
+% \email{list of emails}
+% \end{verbatim}
+%
+% As in standard |amsart| documents, an option can be passed to the |\author| command
+% to specify the replacement for the author's name on th running headers.
+%
+%\begin{center}
+%  \begin{verbatim}
+%\author[header name of the author]{author name}
+%  \end{verbatim}
+%\end{center}
+%
+%  
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -94,8 +138,9 @@
   \fi
 %    \end{macrocode}
 %
-% The |foot| option enables to move the affiliation realted material to the bottom of
+% The |foot| option enables to move the affiliation related material to the bottom of
 % the fisrt page as footnotes.
+%
 %    \begin{macrocode}
 \newif\if@footaddr
 \DeclareOption{foot}{\@footaddrtrue}
@@ -104,7 +149,10 @@
 %
 %
 % \begin{macro}{\author}
-% The |\author| macro can be used the same way in other |amsart| document.
+%
+% The |\author| macro can be used the same way as in other |amsart| documents. The
+% variable |g@author| is used to count the total number of authors.
+%
 %    \begin{macrocode}
 \newcounter{g@author}
 \setcounter{g@author}{0}
@@ -124,12 +172,13 @@
     \fi
   }%
 }
-%   \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
 %
 %
 % \begin{macro}{\email}
-% 
+% The |\email| command is used to specify the different authors. The email addresses
+% can be specified in a unique command or using separate invocations of the command.
 %    \begin{macrocode}
 \let\emails\@empty
 \renewcommand{\email}[2][]{
@@ -143,6 +192,7 @@
 % \end{macro}
 %
 % Process |\author| and |\address| macros 
+%
 %    \begin{macrocode}
 \def\@set@authors@addresses{\par
   \skip@30\p@ 
@@ -161,6 +211,12 @@
   \addresses
   \endgroup
 }
+%    \end{macrocode}
+%
+% \begin{macro}{\@setfoot@addresses}
+% The |\@setfoot@addresses| macro is used to print the addresses as footnotes. This
+% macro is called when the |foot| option is passed to the package .
+%    \begin{macrocode}  
 \def\@setfoot@addresses{
   \def\author##1{}%
   \def\\{\unskip, \ignorespaces}%
@@ -176,6 +232,12 @@
   \def\urladdr##1##2{}%
   \addresses
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@setaddresses}
+% The |\@setaddresses| macro is used to process the addresses when they are to appear
+% just below the authors' names on the front page.
+%    \begin{macrocode}  
 \def\@setaddresses{\par
   \nobreak \begingroup
   \def\author##1{\nobreak\addvspace\bigskipamount}%
@@ -195,18 +257,24 @@
   \endgroup
 }
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@setemails}
+% The |\@setemails| macro is called by the |\maketitle| command to print the email
+% addresses.
 %    \begin{macrocode}
-\def\@setemails{
+\def\@setemails{%
   \ifnum\theg@author > 1
     \mbox{{\itshape E-mail addresses}:\space}{\ttfamily\emails}.
   \else
     \mbox{{\itshape\space E-mail \space address}:\space}{\ttfamily\emails}.
-  \fi
+  \fi%
 }
 %    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\@maketitle}
-%
+% The |\@maketitle| macro is used to replace the standard |\makefile| command. Before
+% issuing this command, no authors, affiliations, nor emails are printed.
 %    \begin{macrocode}  
 \def\@maketitle{%
   \normalfont\normalsize
@@ -244,13 +312,15 @@
 } % end \@maketitle
 %    \end{macrocode}
 % \end{macro}
-% Be sure not to duplicate addresses' entries at the end of the document if already
-% printed elsewhere.
+%
+% In |amsart| documents, affiliations are normally printed by the command
+% |\enddoc@text|. To avoid a double printing of the ocnsidered material, the macro
+% |\enddoc@text| has to redefined.
+%
 %    \begin{macrocode}
 \def\enddoc@text{
   \ifx\@empty\addresses\else \@setaddresses\fi
 }
-
 %    \end{macrocode}
 % \Finale
 \endinput
