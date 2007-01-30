@@ -61,7 +61,7 @@
 %
 % \DoNotIndex{\newcommand,\newenvironment}
 %
-% \date{\filedate}
+% \date{\today}
 % \title{The \textsf{amsaddr} class\thanks{This document
 %   corresponds to \textsf{amsaddr}~\fileversion, dated \filedate.}}
 % \author{J\'er\^ome Lelong \\ \texttt{jerome.lelong@gmail.com}}
@@ -70,7 +70,7 @@
 %
 % \begin{abstract}
 %   This package is intended to be used with the \textsf{amsart} documentclass only. It
-%   lets you move the authors' affiliations either just below below the
+%   lets you move the authors' affiliations either just below the
 %   authors' names on the front page or as footnotes on the first page. The email
 %   addresses are always listed as a footnote on the front page.
 % \end{abstract}
@@ -117,14 +117,14 @@
 % 
 % If |amsaddr| is used without the |foot| option, the addresses declared with the
 % |\address| command are printed just below the authors'names declared with the
-% preceeding |\author| command. The emails appear as a footnote list like this
+% preceeding |\author| command. The emails appear as a footnote like this
 % \\
 % 
 % {\it E-mail addresses:} {\texttt{email one}, \texttt{email two}, and so on}
 % \\
 %
 % If the option |foot| was passed to the package, you may consider numbering
-% authors' names so that you can use numbered footnotes for the affiliations
+% authors' names so that you can use numbered footnotes for the affiliations.
 % 
 % \begin{verbatim}
 % \author{author one$^1$ and author two$^1$}
@@ -137,7 +137,7 @@
 % \end{verbatim}
 %
 % As in standard |amsart| documents, an option can be passed to the |\author| command
-% to specify the replacement for the author's name on th running headers.
+% to specify the replacement for the author's name on the running headers.
 %
 %\begin{center}
 %  \begin{verbatim}
@@ -236,7 +236,7 @@
 %
 % \begin{macro}{\@setfoot@addresses}
 % The |\@setfoot@addresses| macro is used to print the addresses as footnotes. This
-% macro is called when the |foot| option is passed to the package .
+% macro is called when the |foot| option is passed to the package.
 %    \begin{macrocode}  
 \def\@setfoot@addresses{
   \def\author##1{}%
@@ -334,9 +334,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% In |amsart| documents, affiliations are normally printed by the command
-% |\enddoc@text|. To avoid a double printing of the ocnsidered material, the macro
-% |\enddoc@text| has to redefined.
+% In |amsart| documents, affiliations are normally printed by the |\enddoc@text|
+% command . To avoid a double printing of the considered material, the |\enddoc@text|
+% macro has to be redefined.
 %
 %    \begin{macrocode}
 \def\enddoc@text{

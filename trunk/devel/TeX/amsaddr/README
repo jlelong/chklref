@@ -1,0 +1,25 @@
+README for the amsaddr package
+
+
+This package is intended to be used with the amsart documentclass
+only. It lets you move the authors' affiliations either just below the
+authors' names on the front page or as footnotes on the first
+page. The email addresses are always listed as a footnote on the front
+page.
+
+
+To produce the amsaddr.sty simply run latex amsaddr.ins.
+
+
+--------------------------------------
+
+Jerome Lelong
+January 30, 2007
+Version 1.0
+
+
+This material is subject to the LaTeX Project Public License.  See
+http://www.ctan.org/tex-archive/help/Catalogue/licenses.lppl.html for
+the details of that license.
+
+
