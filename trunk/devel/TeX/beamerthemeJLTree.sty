@@ -1,11 +1,14 @@
+
+%% * $Author: lelong $
+%% * $Revision: 1.2 $
+%% * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/beamerthemeJLTree.sty,v $
+%% * $Date: 2007-07-21 18:04:29 $
+
+%% This file can be modified or redistributed under the terms of Gnu Public
+%% License version 1 or 2.
+
+
 \ProvidesPackage{beamerthemeJLTree}
-
-%% this is versin 1.1 2006/11/18
-
-%% Copyright Jerome LELONG <jerome.lelong@gmail.com> 2006
-%% This program can be redistributed and/or modified under the terms
-%% of the GNU Public License, version 2 or later.
-
 
 \newif\ifbeamer@tree@showhooks
 \beamer@tree@showhookstrue
@@ -66,8 +69,9 @@
   \begin{beamercolorbox}[wd=.45\paperwidth, ht=\@tempdimb]{left block}%
     \usebeamerfont{section in head/foot}%
     \vbox to\@tempdimb{\vfill\insertsectionnavigation{.45\paperwidth}\vfill}%
+    \advance\@tempdimb 1.125ex%
   \end{beamercolorbox}%
-  \begin{beamercolorbox}[wd=1.125ex,ht=\@tempdimb,dp=1.125ex]{middle separation line head}%
+  \begin{beamercolorbox}[wd=1.125ex,ht=\@tempdimb]{middle separation line head}%
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.44\paperwidth]{middle block}%
     \vbox to\@tempdimb{\vfill%
