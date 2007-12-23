@@ -36,34 +36,75 @@ sub tex_parse
     my @entries = ();
     my @refs = ();
     my @labels = ();
-    my ($str, $begin, $end, $star);
+    my ($str, $begin, $end, $star, $labeled_env, $label);
     my $math_mode = join('|', @math_modes);
     $math_mode = "($math_mode)";
     open (FIC, $file) or die("open: $!");
     while (<FIC>)
     {
-        if (m/\\begin{$math_mode(\**)}/)
+        if (m/\\label({[^{}]*)}/)
+        {
+            push(@labels, $1);
+        } elsif (m/\\ref({[^{}]*)}/)
+        {
+            push(@refs, $1);
+        }
+        if (m/\\begin{$math_mode(\**)}[ ]*(\\label{([^{}]*)})*/)
         {
             $str = $1;
-            $star = 1;
+            $labeled_env = 0;
+            if ($3)
+            {
+                push(@labels,$4) ;
+                $labeled_env=1;
+            }
+            $star = 1; 
             $star = 0 unless ($2);
             $begin = $.;
             while (<FIC>)
             {
+                if (m/\\label({[^{}]*)}/)
+                {
+                    push(@labels, $1);
+                } elsif (m/\\ref({[^{}]*)}/)
+                {
+                    push(@refs, $1);
+                }
                 if (m/\\end{$str\*{$star}}/)
                 {
                     $end = $.;
-                    $entry = math_entry->new($str, $begin, $end, $star);
+                    if ($labeled_env)
+                    {
+                        print "label $star\n";
+                        $entry = math_entry->new($str, $begin, $end, $star, 1);
+                    }else{
+                        $entry = math_entry->new($str, $begin, $end, $star, -1);
+                    }
                     push(@entries, $entry);
                     last;
                 }
             }
-        }
+        } 
+
     }
     close FIC;
     return \@entries;
 }
 
+sub star_label
+{
+    my ($entries) = @_;
+    my @entries = @$entries;
+    my $e;
+    foreach $e (@entries)
+    {
+        print "$e->{label} --- $e->{star}\n";
+        if (($e->{star} == 1) && ($e->{label} > 0))
+        {
+            print "line $e->{label} remove label\n" ;
+        }
+    }
+}
 
 sub disp_msg
 {
@@ -75,10 +116,12 @@ sub disp_msg
         print ("env $e->{str} \n");
         print ("\tbeginning : $e->{begin}\n\tend : $e->{end}\n");
         print ("\tstar environment\n") if ($e->{star}==1);
+        print ("\tlabeled environement\n") if ($e->{label}>0);
         print("\n");
     }
     
 }
 
 $entries=tex_parse $ARGV[0];
-disp_msg($entries);
+##disp_msg($entries);
+star_label($entries);

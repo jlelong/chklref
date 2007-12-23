@@ -261,6 +261,7 @@
 
   La dynamique du court de l'actif $i$ est donnée par
   \begin{equation*}
+    \label{eq:poo}
     dS_{t}^{i}=S_{t}^{i}\left(\mu_{i}\,dt +
       \sum_{1\le j\le i}\sigma_{i,j}d B_t^j\right).
   \end{equation*}
@@ -281,8 +282,7 @@
 
   On considère une option américaine de maturité $T$ et de payoff $\phi$. Son
   prix à l'instant $0$ est donné par
-  \begin{equation}
-    \label{eq:prix_amer}
+  \begin{equation}    \label{eq:prix_amer}
     \sup_{\tau \in \tilde \ct_{0,T}} \E(\expp{-r\tau} \phi(S_\tau)),
   \end{equation}
   où $\tilde \ct_{0,T}$ est l'ensemble des temps d'arrêt à valeurs dans $[0,
