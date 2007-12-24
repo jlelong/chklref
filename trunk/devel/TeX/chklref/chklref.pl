@@ -42,44 +42,40 @@ sub tex_parse
     open (FIC, $file) or die("open: $!");
     while (<FIC>)
     {
-        if (m/\\label({[^{}]*)}/)
+        if (m/^[^%]*\\label{([^{}]*)}/)
         {
             push(@labels, $1);
-        } elsif (m/\\ref({[^{}]*)}/)
+        } elsif (m/^[^%]*\\ref{([^{}]*)}/)
         {
             push(@refs, $1);
         }
-        if (m/\\begin{$math_mode(\**)}[ ]*(\\label{([^{}]*)})*/)
+        if (m/\\begin{$math_mode(\**)}[ ]*([^%]*\\label{([^{}]*)})*/)
         {
             $str = $1;
             $labeled_env = 0;
             if ($3)
             {
                 push(@labels,$4) ;
-                $labeled_env=1;
+                $labeled_env = $.;
             }
             $star = 1; 
             $star = 0 unless ($2);
             $begin = $.;
             while (<FIC>)
             {
-                if (m/\\label({[^{}]*)}/)
+                if (m/^[^%]*\\label{([^{}]*)}/)
                 {
                     push(@labels, $1);
-                } elsif (m/\\ref({[^{}]*)}/)
+                    $label=$1;
+                    $labeled_env = $.;
+                } elsif (m/\\ref{([^{}]*)}/)
                 {
                     push(@refs, $1);
                 }
                 if (m/\\end{$str\*{$star}}/)
                 {
                     $end = $.;
-                    if ($labeled_env)
-                    {
-                        print "label $star\n";
-                        $entry = math_entry->new($str, $begin, $end, $star, 1);
-                    }else{
-                        $entry = math_entry->new($str, $begin, $end, $star, -1);
-                    }
+                    $entry = math_entry->new($str, $begin, $end, $star, $labeled_env, $label);
                     push(@entries, $entry);
                     last;
                 }
@@ -88,9 +84,10 @@ sub tex_parse
 
     }
     close FIC;
-    return \@entries;
+    return (\@entries, \@labels, \@refs);
 }
 
+## find labeled star environment
 sub star_label
 {
     my ($entries) = @_;
@@ -98,11 +95,33 @@ sub star_label
     my $e;
     foreach $e (@entries)
     {
-        print "$e->{label} --- $e->{star}\n";
-        if (($e->{star} == 1) && ($e->{label} > 0))
+        if (($e->{star} == 1) && ($e->{label_line} > 0))
         {
-            print "line $e->{label} remove label\n" ;
+            print "line $e->{label_line} remove label $e->{label}\n" ;
         }
+    }
+}
+
+
+sub unused_label
+{
+    my ($labels, $refs) = @_;
+    my @labels = @$labels;
+    my @refs = @$refs;
+    my $found;
+     
+    foreach $l (@labels)
+    {
+        $found = 0;
+        foreach $r (@refs)
+        {
+            if ($r eq $l)
+                {
+                    $found=1;
+                    last;
+                }
+        }
+        print "remove label $l\n" if (!$found);
     }
 }
 
@@ -122,6 +141,6 @@ sub disp_msg
     
 }
 
-$entries=tex_parse $ARGV[0];
-##disp_msg($entries);
+($entries, $labels, $refs)=tex_parse $ARGV[0];
 star_label($entries);
+unused_label($labels, $refs);

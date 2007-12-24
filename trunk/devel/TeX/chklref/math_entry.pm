@@ -12,13 +12,14 @@ use strict;
 
 sub new
 {
-    my ($class, $str, $begin, $end, $star, $label) = @_;
+    my ($class, $str, $begin, $end, $star, $label_line, $label) = @_;
     my $this = {};
     bless($this, $class);
     $this->{str} = $str;
     $this->{begin} = $begin;
     $this->{end} = $end;
     $this->{star} = $star;
+    $this->{label_line} = $label_line;
     $this->{label} = $label;
     return $this;
 }
