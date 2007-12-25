@@ -24,4 +24,14 @@ sub new
     return $this;
 }
 
+sub new_ref
+{
+    my ($class,$str,$line) = @_;
+    my $this = {};
+    bless($this, $class);
+    $this->{str} = $str;
+    $this->{line} = $line;
+    return $this;
+}
+
 1;

@@ -1,5 +1,10 @@
 #!/usr/bin/perl
 
+# * $Author: lelong $
+# * $Revision: 1.4 $
+# * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
+# * $Date: 2007-12-25 14:43:50 $
+
 
 #########################################################################
 # Written and (C) by Jérôme Lelong <jerome.lelong@gmail.com>            #
@@ -19,9 +24,7 @@
 #########################################################################
 
 
-
 use math_entry;
-
 
 ## recognised math environments
 @math_modes = ( "equation","eqnarray","align", "multline" );
@@ -40,14 +43,19 @@ sub tex_parse
     my $math_mode = join('|', @math_modes);
     $math_mode = "($math_mode)";
     open (FIC, $file) or die("open: $!");
+    ## jump to the beginning of the document
+    while (<FIC>)
+    {
+        last if (m/^[^%]*\\begin{document}/);
+    }
     while (<FIC>)
     {
         if (m/^[^%]*\\label{([^{}]*)}/)
         {
-            push(@labels, $1);
-        } elsif (m/^[^%]*\\ref{([^{}]*)}/)
+            push(@labels, math_entry->new_ref($1, $.)) ;
+        } elsif (m/^[^%]*\\(eq)*ref{([^{}]*)}/)
         {
-            push(@refs, $1);
+            push(@refs, math_entry->new_ref($2, $.));
         }
         if (m/\\begin{$math_mode(\**)}[ ]*([^%]*\\label{([^{}]*)})*/)
         {
@@ -55,7 +63,7 @@ sub tex_parse
             $labeled_env = 0;
             if ($3)
             {
-                push(@labels,$4) ;
+                push(@labels, math_entry->new_ref($4, $.)) ;
                 $labeled_env = $.;
             }
             $star = 1; 
@@ -65,12 +73,12 @@ sub tex_parse
             {
                 if (m/^[^%]*\\label{([^{}]*)}/)
                 {
-                    push(@labels, $1);
+                    push(@labels, math_entry->new_ref($1, $.));
                     $label=$1;
                     $labeled_env = $.;
-                } elsif (m/\\ref{([^{}]*)}/)
+                } elsif (m/\\(eq)*ref{([^{}]*)}/)
                 {
-                    push(@refs, $1);
+                    push(@refs, math_entry->new_ref($2,$.));
                 }
                 if (m/\\end{$str\*{$star}}/)
                 {
@@ -81,50 +89,77 @@ sub tex_parse
                 }
             }
         } 
-
     }
     close FIC;
     return (\@entries, \@labels, \@refs);
 }
 
-## find labeled star environment
+## find labeled and starred environments
 sub star_label
 {
     my ($entries) = @_;
-    my @entries = @$entries;
     my $e;
-    foreach $e (@entries)
+    print "*********************************
+** Labels in starred environments **
+*********************************\n";
+    foreach $e (@$entries)
     {
         if (($e->{star} == 1) && ($e->{label_line} > 0))
         {
-            print "line $e->{label_line} remove label $e->{label}\n" ;
+            printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label}) ;
         }
     }
+    print "\n";
 }
 
+## find labels without any corresponding refs.
+## refs must be sorted
+## possibly it should
+## also check for refs correpsonding to no label
 
 sub unused_label
 {
     my ($labels, $refs) = @_;
-    my @labels = @$labels;
-    my @refs = @$refs;
     my $found;
-     
-    foreach $l (@labels)
+
+    print "*******************
+** Unused Labels **
+*******************\n";
+    foreach $l (@$labels)
     {
         $found = 0;
-        foreach $r (@refs)
+        foreach $r (@$refs)
         {
-            if ($r eq $l)
-                {
-                    $found=1;
-                    last;
-                }
+            if ($r->{str} eq $l->{str})
+            {
+                $found=1; last;
+            } elsif ($r->{str} ge $l->{str})
+            {
+                last;
+            }
         }
-        print "remove label $l\n" if (!$found);
+        printf("line %4d : remove label %s\n",$l->{line}, $l->{str})  if (!$found);
     }
+    print "\n";
 }
 
+
+## find and remove duplicates in an
+## array of { str, line } entries.
+## Note that the array must be sorted according to str
+sub rm_duplicate
+{
+    my ($array) = @_;
+    my $prev = '___________not_a_true_label______';
+    my @uniq_array = grep($_->{str} ne $prev && (($prev) = $_->{str}), @$array);
+    return \@uniq_array;
+}
+
+## display all math envs with their characteristics
+## line of beginning
+## line of end
+## starred or not
+## label
 sub disp_msg
 {
     my ($entries) = @_;
@@ -142,5 +177,8 @@ sub disp_msg
 }
 
 ($entries, $labels, $refs)=tex_parse $ARGV[0];
+@labels = sort { $a->{str} cmp $b->{str} } @$labels ;
+@refs = sort { $a->{str} cmp $b->{str} } @$refs ;
+$uniq_refs = rm_duplicate(\@refs);
 star_label($entries);
-unused_label($labels, $refs);
+unused_label($labels, $uniq_refs);
