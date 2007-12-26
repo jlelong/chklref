@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.4 $
+# * $Revision: 1.5 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2007-12-25 14:43:50 $
+# * $Date: 2007-12-26 18:04:11 $
 
 
 #########################################################################
@@ -23,11 +23,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>. #
 #########################################################################
 
-
+use File::Basename;
+use Cwd qw(realpath);
+my $fullpath;
+BEGIN { $fullpath = dirname((realpath($0))); }
+use lib $fullpath;
 use math_entry;
+
+use Getopt::Std;
+our ($opt_h, $opt_i);
+$opt_h = 0; $opt_i = 0;
+getopts('hi:');
 
 ## recognised math environments
 @math_modes = ( "equation","eqnarray","align", "multline" );
+@ignore_labels = ("hyp:");
 
 ## Parses tex file and looks for the environments defined by
 ## @math_modes. The first and last line of the environment are stored
@@ -42,6 +52,8 @@ sub tex_parse
     my ($str, $begin, $end, $star, $labeled_env, $label);
     my $math_mode = join('|', @math_modes);
     $math_mode = "($math_mode)";
+    my $ignore_label = join('|', @ignore_labels);
+    $ignore_label = "(?:$ignore_label)";
     open (FIC, $file) or die("open: $!");
     ## jump to the beginning of the document
     while (<FIC>)
@@ -50,14 +62,14 @@ sub tex_parse
     }
     while (<FIC>)
     {
-        if (m/^[^%]*\\label{([^{}]*)}/)
+        if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/)
         {
             push(@labels, math_entry->new_ref($1, $.)) ;
         } elsif (m/^[^%]*\\(eq)*ref{([^{}]*)}/)
         {
             push(@refs, math_entry->new_ref($2, $.));
         }
-        if (m/\\begin{$math_mode(\**)}[ ]*([^%]*\\label{([^{}]*)})*/)
+        if (m/^[^%]*\\begin{$math_mode(\**)}[ ]*([^%]*\\label{(?!$ignore_label)([^{}]*)})*/)
         {
             $str = $1;
             $labeled_env = 0;
@@ -76,11 +88,11 @@ sub tex_parse
                     push(@labels, math_entry->new_ref($1, $.));
                     $label=$1;
                     $labeled_env = $.;
-                } elsif (m/\\(eq)*ref{([^{}]*)}/)
+                } elsif (m/^[^%]*\\(eq)*ref{([^{}]*)}/)
                 {
                     push(@refs, math_entry->new_ref($2,$.));
                 }
-                if (m/\\end{$str\*{$star}}/)
+                if (m/^[^%]*\\end{$str\*{$star}}/)
                 {
                     $end = $.;
                     $entry = math_entry->new($str, $begin, $end, $star, $labeled_env, $label);
@@ -107,6 +119,10 @@ sub star_label
         if (($e->{star} == 1) && ($e->{label_line} > 0))
         {
             printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label}) ;
+        }
+        if (($e->{star} == 0) && ($e->{label_line} == 0))
+        {
+            printf("line %4d : consider using a STAR environment\n", $e->{begin});
         }
     }
     print "\n";
