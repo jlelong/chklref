@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.5 $
+# * $Revision: 1.6 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2007-12-26 18:04:11 $
+# * $Date: 2008-01-14 15:22:50 $
 
 
 #########################################################################
@@ -69,7 +69,7 @@ sub tex_parse
         {
             push(@refs, math_entry->new_ref($2, $.));
         }
-        if (m/^[^%]*\\begin{$math_mode(\**)}[ ]*([^%]*\\label{(?!$ignore_label)([^{}]*)})*/)
+        if (m/^[^%]*\\begin[ ]*{$math_mode(\**)}[ ]*([^%]*\\label{(?!$ignore_label)([^{}]*)})*/)
         {
             $str = $1;
             $labeled_env = 0;
@@ -92,7 +92,7 @@ sub tex_parse
                 {
                     push(@refs, math_entry->new_ref($2,$.));
                 }
-                if (m/^[^%]*\\end{$str\*{$star}}/)
+                if (m/^[^%]*\\end[ ]*{$str\*{$star}}/)
                 {
                     $end = $.;
                     $entry = math_entry->new($str, $begin, $end, $star, $labeled_env, $label);
@@ -196,5 +196,6 @@ sub disp_msg
 @labels = sort { $a->{str} cmp $b->{str} } @$labels ;
 @refs = sort { $a->{str} cmp $b->{str} } @$refs ;
 $uniq_refs = rm_duplicate(\@refs);
+#disp_msg($entries);
 star_label($entries);
 unused_label($labels, $uniq_refs);
