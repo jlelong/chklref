@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.6 $
+# * $Revision: 1.7 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-14 15:22:50 $
+# * $Date: 2008-01-19 16:31:35 $
 
 
 #########################################################################
@@ -58,18 +58,21 @@ sub tex_parse
     ## jump to the beginning of the document
     while (<FIC>)
     {
-        last if (m/^[^%]*\\begin{document}/);
+        last if (m/^[^%]*\\begin{document}/o);
     }
     while (<FIC>)
     {
-        if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/)
+        if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/o)
         {
             push(@labels, math_entry->new_ref($1, $.)) ;
-        } elsif (m/^[^%]*\\(eq)*ref{([^{}]*)}/)
-        {
-            push(@refs, math_entry->new_ref($2, $.));
+        } else {
+            while (/\G[^%]*?\\(eq)*ref{([^{}]*)}/go)
+            {
+                push(@refs, math_entry->new_ref($2,$.));
+            }
         }
-        if (m/^[^%]*\\begin[ ]*{$math_mode(\**)}[ ]*([^%]*\\label{(?!$ignore_label)([^{}]*)})*/)
+        if (/^[^%]*\\begin[ ]*{$math_mode(\**)}[ ]*
+             ([^%]*\\label{(?!$ignore_label)([^{}]*)})*/ox)
         {
             $str = $1;
             $labeled_env = 0;
@@ -83,14 +86,16 @@ sub tex_parse
             $begin = $.;
             while (<FIC>)
             {
-                if (m/^[^%]*\\label{([^{}]*)}/)
+                if (m/^[^%]*\\label{([^{}]*)}/o)
                 {
                     push(@labels, math_entry->new_ref($1, $.));
                     $label=$1;
                     $labeled_env = $.;
-                } elsif (m/^[^%]*\\(eq)*ref{([^{}]*)}/)
-                {
-                    push(@refs, math_entry->new_ref($2,$.));
+                } else {
+                    while (m/\G[^%]*\\(eq)*ref{([^{}]*)}/go)
+                    {
+                        push(@refs, math_entry->new_ref($2,$.));
+                    }
                 }
                 if (m/^[^%]*\\end[ ]*{$str\*{$star}}/)
                 {
