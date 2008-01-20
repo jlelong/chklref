@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.7 $
+# * $Revision: 1.8 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-19 16:31:35 $
+# * $Date: 2008-01-20 17:39:38 $
 
 
 #########################################################################
@@ -71,7 +71,8 @@ sub tex_parse
                 push(@refs, math_entry->new_ref($2,$.));
             }
         }
-        if (/^[^%]*\\begin[ ]*{$math_mode(\**)}[ ]*
+        if (/^[^%]*\\begin[ ]*{$math_mode(\**)}
+             [ ]*
              ([^%]*\\label{(?!$ignore_label)([^{}]*)})*/ox)
         {
             $str = $1;
