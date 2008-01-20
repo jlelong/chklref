@@ -1,0 +1,62 @@
+\documentclass[a4paper,11pt,twoside]{article}
+\usepackage{a4wide}
+\usepackage{latexsym}
+\usepackage{amssymb, amsmath, amsthm}
+\usepackage{fancyhdr}
+\usepackage[latin1]{inputenc}
+\usepackage{enumitem}
+\usepackage[round]{natbib}
+\usepackage{times}
+\def\cite{\citet}
+
+%%--------------------------------------------
+\hbadness=10000
+\emergencystretch=\hsize
+\tolerance=9999
+\textheight=9.0in
+%%--------------------------------------------
+
+\usepackage[english]{babel}
+\def\chk{{\it chklref}}
+
+
+
+\title{chklref\\
+{\large version 1.0}}
+\date{\today}
+\author{J\'er\^ome Lelong\footnote{Email:\texttt{jerome.lelong@gmail.com}}}
+  
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file of any
+  unneeded labels? This is precisely what \chk\ aims to do. 
+\end{abstract}
+
+\section{What {\it chklref} can do for a \LaTeX\ user ?}
+
+While typing a \TeX, it is quite common to add labels that will in the end
+reveal unneeded, this is especially true for equations or any other mathematical
+environments. It would be quite convenient to wipe out those labels from the
+final version of the document. \chk\ has been designed to help any \TeX\
+user doing so.
+
+\chk\ parses all the \TeX file to detect labels that do not have a matching
+reference. At the end of the program, a summary is printed with the list of
+labels to be removed. Obviously, this search is performed in the whole document
+and not only within mathematical environments. Nonetheless, there is something
+specifically dedicated to mathematical environments : it looks for the non
+starred mathematical environments not containing a label.
+
+
+\section{Usage}
+
+Typical usage : \verb!chklref file.tex!.
+
+\section{Requirements}
+
+\chk\ is written in Perl and should work with any standard Perl installation.
+
+\end{document}
