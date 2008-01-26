@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.8 $
+# * $Revision: 1.9 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-20 17:39:38 $
+# * $Date: 2008-01-26 10:50:43 $
 
 
 #########################################################################
@@ -23,21 +23,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>. #
 #########################################################################
 
-use File::Basename;
-use Cwd qw(realpath);
-my $fullpath;
-BEGIN { $fullpath = dirname((realpath($0))); }
-use lib $fullpath;
-use math_entry;
-
-use Getopt::Std;
-our ($opt_h, $opt_i);
-$opt_h = 0; $opt_i = 0;
-getopts('hi:');
-
 ## recognised math environments
 @math_modes = ( "equation","eqnarray","align", "multline" );
 @ignore_labels = ("hyp:");
+
+## creates a hash with two keys "str" and "line" and returns a
+## reference to it
+##
+## Takes 2 args
+sub new_ref
+{
+    my ($str, $line) = @_;
+    my $ref = {};
+    $ref->{str}=$str; $ref->{line}=$line;
+    return $ref;
+}
+
+
+## creates a hash with six keys "str", "begin", "end", "star",
+## "label_line" and "label" and returns a reference to it.
+##
+## Takes 6 args
+sub new_math_env
+{
+    my ($str, $begin, $end, $star, $label_line, $label) = @_;
+    my $this = {};
+    $this->{str} = $str;
+    $this->{begin} = $begin;
+    $this->{end} = $end;
+    $this->{star} = $star;
+    $this->{label_line} = $label_line;
+    $this->{label} = $label;
+    return $this;
+}
 
 ## Parses tex file and looks for the environments defined by
 ## @math_modes. The first and last line of the environment are stored
@@ -64,22 +82,22 @@ sub tex_parse
     {
         if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/o)
         {
-            push(@labels, math_entry->new_ref($1, $.)) ;
-        } else {
+            push(@labels, new_ref($1, $.)) ;
+        } else
+        {
             while (/\G[^%]*?\\(eq)*ref{([^{}]*)}/go)
             {
-                push(@refs, math_entry->new_ref($2,$.));
+                push(@refs, new_ref($2,$.));
             }
         }
         if (/^[^%]*\\begin[ ]*{$math_mode(\**)}
              [ ]*
-             ([^%]*\\label{(?!$ignore_label)([^{}]*)})*/ox)
-        {
+             ([^%]*\\label{(?!$ignore_label)([^{}]*)})*/ox) {
             $str = $1;
             $labeled_env = 0;
             if ($3)
             {
-                push(@labels, math_entry->new_ref($4, $.)) ;
+                push(@labels, new_ref($4, $.)) ;
                 $labeled_env = $.;
             }
             $star = 1; 
@@ -89,19 +107,20 @@ sub tex_parse
             {
                 if (m/^[^%]*\\label{([^{}]*)}/o)
                 {
-                    push(@labels, math_entry->new_ref($1, $.));
+                    push(@labels, new_ref($1, $.));
                     $label=$1;
                     $labeled_env = $.;
-                } else {
+                } else
+                {
                     while (m/\G[^%]*\\(eq)*ref{([^{}]*)}/go)
                     {
-                        push(@refs, math_entry->new_ref($2,$.));
+                        push(@refs, new_ref($2,$.));
                     }
                 }
                 if (m/^[^%]*\\end[ ]*{$str\*{$star}}/)
                 {
                     $end = $.;
-                    $entry = math_entry->new($str, $begin, $end, $star, $labeled_env, $label);
+                    $entry = new_math_env($str, $begin, $end, $star, $labeled_env, $label);
                     push(@entries, $entry);
                     last;
                 }
@@ -117,19 +136,14 @@ sub star_label
 {
     my ($entries) = @_;
     my $e;
-    print "*********************************
+    print "************************************
 ** Labels in starred environments **
-*********************************\n";
+************************************\n";
     foreach $e (@$entries)
     {
-        if (($e->{star} == 1) && ($e->{label_line} > 0))
-        {
-            printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label}) ;
-        }
-        if (($e->{star} == 0) && ($e->{label_line} == 0))
-        {
-            printf("line %4d : consider using a STAR environment\n", $e->{begin});
-        }
+        printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label})  if (($e->{star} == 1) && ($e->{label_line} > 0));
+
+        printf("line %4d : consider using a STAR environment\n", $e->{begin})   if (($e->{star} == 0) && ($e->{label_line} == 0));
     }
     print "\n";
 }
@@ -177,31 +191,30 @@ sub rm_duplicate
     return \@uniq_array;
 }
 
-## display all math envs with their characteristics
-## line of beginning
-## line of end
-## starred or not
-## label
-sub disp_msg
-{
-    my ($entries) = @_;
-    my @entries = @$entries;
+# ## display all math envs with their characteristics
+# ## line of beginning
+# ## line of end
+# ## starred or not
+# ## label
+# sub disp_msg
+# {
+#     my ($entries) = @_;
+#     my @entries = @$entries;
 
-    foreach $e (@entries)
-    {
-        print ("env $e->{str} \n");
-        print ("\tbeginning : $e->{begin}\n\tend : $e->{end}\n");
-        print ("\tstar environment\n") if ($e->{star}==1);
-        print ("\tlabeled environement\n") if ($e->{label}>0);
-        print("\n");
-    }
+#     foreach $e (@entries)
+#     {
+#         print ("env $e->{str} \n");
+#         print ("\tbeginning : $e->{begin}\n\tend : $e->{end}\n");
+#         print ("\tstar environment\n") if ($e->{star}==1);
+#         print ("\tlabeled environement\n") if ($e->{label}>0);
+#         print("\n");
+#     }
     
-}
+# }
 
 ($entries, $labels, $refs)=tex_parse $ARGV[0];
 @labels = sort { $a->{str} cmp $b->{str} } @$labels ;
 @refs = sort { $a->{str} cmp $b->{str} } @$refs ;
 $uniq_refs = rm_duplicate(\@refs);
-#disp_msg($entries);
 star_label($entries);
 unused_label($labels, $uniq_refs);

@@ -1,3 +1,5 @@
+%% -*- ispell-local-dictionary: "british"; -*-
+
 \documentclass[a4paper,11pt,twoside]{article}
 \usepackage{a4wide}
 \usepackage{latexsym}
@@ -21,7 +23,7 @@
 
 
 
-\title{chklref\\
+\title{Check \LaTeX\ references : chklref\\
 {\large version 1.0}}
 \date{\today}
 \author{J\'er\^ome Lelong\footnote{Email:\texttt{jerome.lelong@gmail.com}}}
@@ -30,9 +32,9 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}
-  Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file of any
-  unneeded labels? This is precisely what \chk\ aims to do. 
+\begin{abstract} Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file
+  of any unneeded labels right before submitting an article for instance? This
+  is precisely what \chk\ will help you do.
 \end{abstract}
 
 \section{What {\it chklref} can do for a \LaTeX\ user ?}
@@ -43,21 +45,78 @@ environments. It would be quite convenient to wipe out those labels from the
 final version of the document. \chk\ has been designed to help any \TeX\
 user doing so.
 
-\chk\ parses all the \TeX file to detect labels that do not have a matching
+\chk\ parses all the \TeX\ file to detect labels that do not have a matching
 reference. At the end of the program, a summary is printed with the list of
 labels to be removed. Obviously, this search is performed in the whole document
 and not only within mathematical environments. Nonetheless, there is something
 specifically dedicated to mathematical environments : it looks for the non
 starred mathematical environments not containing any label.
 
+For instance, consider you a have a \TeX\ file with the following piece of code
+\begin{verbatim}
+\begin{equation}
+  x^2 + x + 1 = 0
+\end{equation}
+\end{verbatim}
+\chk\ will advise you to consider using \verb!equation*! instead of
+\verb!equation! to remove the unneeded and by the way unsable number that would
+otherwise appear next to the equation.
 
+Starred environments with labels are also tracked because with most \LaTeX\
+distributions it does event raise a warning. However in case you may refer to
+this label the number that would appear is likely to be nonsense.
+
+The summary printed at the end of the program contains two sections (see
+Figure~\ref{fig:output}): one about labels in starred environments and one about
+unneeded labels. Each of these output lines begins with a line number referring
+to the parsed \TeX\ file. Then, the action to be undertaken is printed :
+``remove label'' or ``use a starred environment''. In the case of a ``remove
+label'' message, the label to removed is also printed to avoid any possible
+confusions.
+
+\begin{figure}[htbp]
+  \centering
+\begin{verbatim}
+************************************
+** Labels in starred environments **
+************************************
+line  264 : remove label eq:quantified
+line  200 : consider using a STAR environment
+
+*******************
+** Unused Labels **
+*******************
+line  313 : remove label eq:prog_dyn_prix
+\end{verbatim}
+  \caption{Program output}
+  \label{fig:output}
+\end{figure}
+
+For the moment, the following mathematical environment are tracked out:
+equation, eqnarray, align, multine. This can be customized using the variable
+\verb!@math_modes! in the source file.
 
 \section{Usage}
 
 Typical usage : \verb!chklref file.tex!.
+\\
+
+\noindent By modifying the variable \verb!@ignore_labels!, it is possible to ignore labels
+beginning with a given prefix in the process described above. This is
+particularly usefull if you happen to use other macros than \verb!\ref! and
+\verb!\eqref! to make references.
 
 \section{Requirements}
 
-\chk\ is written in Perl and should work with any standard Perl installation.
+\chk\ is written in Perl and should work with any standard Perl
+installation.
+
+
+\section{Source code}
+
+The source code is distributed under the GPL license version 3 or above in the
+hope it will be usefull but without any warrany. In the case you find a bug in
+the code, could you send me a mail to \verb!jerome.lelong@gmail.com! describing
+the problem with a minimal \TeX\ file to reproduce the problem.
 
 \end{document}
