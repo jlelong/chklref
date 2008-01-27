@@ -1,7 +1,7 @@
 
 installdir = @installdir@
 bindir = @bindir@
-
+distfiles = @distfiles@
 
 all::
 	(cd man; make all)
@@ -13,6 +13,16 @@ install::
 	chmod ugo+x ${bindir}/chklref
 
 uninstall::
-	rm -f ${bindir}/chlref
+	rm -f ${bindir}/chklref
 	(cd man; make uninstall)
 
+
+dist::
+	rm -rf chklref
+	mkdir -p chklref
+	for file in ${distfiles}; do\
+		mkdir -p `dirname $$file`;\
+		cp --parent $$file chklref;\
+	done
+	tar cf - chklref | gzip > chklref.tar.gz
+	rm -r chklref
