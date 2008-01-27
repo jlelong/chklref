@@ -6,11 +6,11 @@
 # January 2008.
 #
 
-LATEX = /usr/bin/latex
-DVIPS = /usr/bin/dvips
+LATEX = @latex_path@
+DVIPS = @dvips_path@
 GS = @gs@
-datarootdir = /usr/local/share
-mandir = /usr/local/share/doc
+datarootdir = @datarootdir@
+mandir = @mandir@
 
 all: manual.pdf
 

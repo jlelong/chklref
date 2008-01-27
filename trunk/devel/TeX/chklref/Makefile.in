@@ -1,0 +1,18 @@
+
+installdir = @installdir@
+bindir = @bindir@
+
+
+all::
+	(cd man; make all)
+
+install::
+	(cd man; make install )
+	mkdir -p ${bindir}
+	cp chklref.pl ${bindir}/chklref
+	chmod ugo+x ${bindir}/chklref
+
+uninstall::
+	rm -f ${bindir}/chlref
+	(cd man; make uninstall)
+

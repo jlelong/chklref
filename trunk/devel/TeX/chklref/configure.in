@@ -5,11 +5,29 @@ if test "x$prefix" = "xNONE" ; then
    prefix=/usr/local
 fi
 
-installdir = ${prefix}
-bindir = ${installdir}/bin
-datadir = ${installdir}/share
+installdir=${prefix}
+bindir=${installdir}/bin
+datarootdir=${installdir}/share
+datadir=${datarootdir}
+mandir=${datadir}/doc
 
 AC_SUBST(bindir)
-AC_SUBST(datadir)
+AC_SUBST(mandir)
 
-AC_OUPUT(Makefile chklref)
+AC_PATH_PROG(latex_path, latex)
+if test "x$latex_path" = "x" ; then    
+   AC_MSG_ERROR("latex not found")
+fi
+
+AC_PATH_PROG(gs_path, gs)
+if test "x$gs_path" = "x" ; then    
+   AC_MSG_ERROR("ghostscript interpreter not found")
+fi
+
+AC_PATH_PROG(dvips_path, dvips)
+if test "x$gs_path" = "x" ; then    
+   AC_MSG_ERROR("dvips not found")
+fi
+
+
+AC_OUTPUT(Makefile man/Makefile)

@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.9 $
+# * $Revision: 1.10 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-26 10:50:43 $
+# * $Date: 2008-01-27 15:13:38 $
 
 
 #########################################################################
@@ -25,12 +25,14 @@
 
 ## recognised math environments
 @math_modes = ( "equation","eqnarray","align", "multline" );
+
+## labels starting with the following prefixes are ignored
 @ignore_labels = ("hyp:");
 
 ## creates a hash with two keys "str" and "line" and returns a
 ## reference to it
 ##
-## Takes 2 args
+## Input: 2 args a string and a line number
 sub new_ref
 {
     my ($str, $line) = @_;
@@ -43,7 +45,13 @@ sub new_ref
 ## creates a hash with six keys "str", "begin", "end", "star",
 ## "label_line" and "label" and returns a reference to it.
 ##
-## Takes 6 args
+## Input : 6 args
+##    a string (the env name)
+##    line of beginning
+##    line of end
+##    is the env starred?
+##    line on which the label appears
+##    value of the label
 sub new_math_env
 {
     my ($str, $begin, $end, $star, $label_line, $label) = @_;
@@ -60,7 +68,9 @@ sub new_math_env
 ## Parses tex file and looks for the environments defined by
 ## @math_modes. The first and last line of the environment are stored
 ## togetther with the name of the environment. One last variable is
-## used to remember if the stared environment was used
+## used to remember if the stared environment was used.
+##
+## Input: a tex file
 sub tex_parse
 {
     my ($file) = @_;
@@ -141,9 +151,11 @@ sub star_label
 ************************************\n";
     foreach $e (@$entries)
     {
-        printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label})  if (($e->{star} == 1) && ($e->{label_line} > 0));
+        printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label})
+        if (($e->{star} == 1) && ($e->{label_line} > 0));
 
-        printf("line %4d : consider using a STAR environment\n", $e->{begin})   if (($e->{star} == 0) && ($e->{label_line} == 0));
+        printf("line %4d : consider using a STAR environment\n", $e->{begin})
+        if (($e->{star} == 0) && ($e->{label_line} == 0));
     }
     print "\n";
 }
