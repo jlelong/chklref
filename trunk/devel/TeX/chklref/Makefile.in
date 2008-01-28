@@ -26,3 +26,6 @@ dist::
 	done
 	tar cf - chklref | gzip > chklref.tar.gz
 	rm -r chklref
+
+clean::
+	(cd man; make clean)

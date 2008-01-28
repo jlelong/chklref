@@ -8,7 +8,7 @@
 
 LATEX = @latex_path@
 DVIPS = @dvips_path@
-GS = @gs@
+GS = @gs_path@
 datarootdir = @datarootdir@
 mandir = @mandir@
 
@@ -30,3 +30,7 @@ install:
 
 uninstall:
 	rm -f $(mandir)/chklref.pdf
+
+
+clean:
+	rm -f manual.dvi manual.log manual.aux manual.out

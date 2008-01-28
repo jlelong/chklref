@@ -8,7 +8,7 @@
 
 LATEX = /usr/bin/latex
 DVIPS = /usr/bin/dvips
-GS = @gs@
+GS = /usr/bin/gs
 datarootdir = /usr/local/share
 mandir = /usr/local/share/doc
 
@@ -30,3 +30,7 @@ install:
 
 uninstall:
 	rm -f $(mandir)/chklref.pdf
+
+
+clean:
+	rm -f manual.dvi manual.log manual.aux manual.out
