@@ -10,13 +10,22 @@
 	make
 	make install
 
-  By default, the installation uses /usr/local as prefix. This behaviour can be
-  changed by passing the --prefix=/new/prefix option to the configure command.
+  By default, the installation uses /usr/local as prefix. This
+  behaviour can be changed by passing the --prefix=/new/prefix option
+  to the configure command.
 
 2. Execution
 
   Just run chklref texfile
 
-  To run ckhlref, you need a Perl interpreter. As no special Perl packages
-  are needed, a very basic Perl distribution should be ok.
+  To run ckhlref, you need a Perl interpreter. As no special Perl
+  packages are needed, a very basic Perl distribution should be ok.
 
+3. Auto completion
+
+   Bash users can add 
+
+        complete -f -X '!*.tex' chklref
+
+   to their .bashrc to activate the autocompletion using exclusively
+   files with the .tex extension

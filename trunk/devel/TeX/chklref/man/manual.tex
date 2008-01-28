@@ -62,8 +62,8 @@ user doing so.
 reference. At the end of the program, a summary is printed with the list of
 labels to be removed. Obviously, this search is performed in the whole document
 and not only within mathematical environments. Nonetheless, there is something
-specifically dedicated to mathematical environments : it looks for the non
-starred mathematical environments not containing any label.
+specifically dedicated to environments that have a starred version : it looks
+for the non starred environments not containing any label.
 
 For instance, consider you a have a \TeX\ file with the following piece of code
 \begin{verbatim}
@@ -117,9 +117,10 @@ particularly usefull if you happen to use other macros than \verb!\ref! and
 \verb!\eqref! to make references.
 \\
 
-\noindent For the moment, the following mathematical environment are tracked out:
-equation, eqnarray, align, multine. This can be customized using the variable
-\verb!@math_modes! in the source file.
+\noindent For the moment, the following environment are tracked out to see if
+they should be starred : equation, eqnarray, align, multine, figure, table,
+tabular. This can be customized using the variable \verb!@have_star_modes! in the
+source file.
 
 \section{Requirements}
 

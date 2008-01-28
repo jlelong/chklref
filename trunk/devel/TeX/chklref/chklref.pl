@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.11 $
+# * $Revision: 1.12 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-28 11:46:52 $
+# * $Date: 2008-01-28 13:27:32 $
 
 
 #########################################################################
@@ -24,7 +24,7 @@
 #########################################################################
 
 ## recognised math environments
-@math_modes = ( "equation","eqnarray","align", "multline" );
+@have_star_modes = ( "equation","eqnarray","align", "multline", "figure", "table", "tabular" );
 
 ## labels starting with the following prefixes are ignored
 @ignore_labels = ();
@@ -66,7 +66,7 @@ sub new_math_env
 }
 
 ## Parses tex file and looks for the environments defined by
-## @math_modes. The first and last line of the environment are stored
+## @have_star_modes. The first and last line of the environment are stored
 ## togetther with the name of the environment. One last variable is
 ## used to remember if the stared environment was used.
 ##
@@ -78,8 +78,8 @@ sub tex_parse
     my @refs = ();
     my @labels = ();
     my ($str, $begin, $end, $star, $labeled_env, $label);
-    my $math_mode = join('|', @math_modes);
-    $math_mode = "($math_mode)";
+    my $have_star_mode = join('|', @have_star_modes);
+    $have_star_mode = "($have_star_mode)";
     my $ignore_label = "";
     unless (@ignore_labels == ())
     {
@@ -105,7 +105,7 @@ sub tex_parse
                 push(@refs, new_ref($2,$.));
             }
         }
-        if (/^[^%]*\\begin[ ]*{$math_mode(\**)}
+        if (/^[^%]*\\begin[ ]*{$have_star_mode(\**)}
              [ ]*
              ([^%]*\\label{(?!$ignore_label)([^{}]*)})*/ox) {
             $str = $1;
