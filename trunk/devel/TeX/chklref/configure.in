@@ -10,7 +10,8 @@ bindir=${installdir}/bin
 datarootdir=${installdir}/share
 datadir=${datarootdir}
 mandir=${datadir}/doc
-distfiles="configure configure.in chklref.pl Makefile.in man/manual.tex man/Makefile.in"
+distfiles="configure configure.in chklref.pl README \
+Makefile.in man/manual.tex man/Makefile.in"
 AC_SUBST(bindir)
 AC_SUBST(mandir)
 AC_SUBST(distfiles)

@@ -9,6 +9,7 @@
 \usepackage{enumitem}
 \usepackage[round]{natbib}
 \usepackage{times}
+\usepackage[dvips=true]{hyperref}
 \def\cite{\citet}
 
 %%--------------------------------------------
@@ -16,20 +17,32 @@
 \emergencystretch=\hsize
 \tolerance=9999
 \textheight=9.0in
-%%--------------------------------------------
+%%--------------------------------------------{http://cermics.enpc.fr/~lelong/prog/chklref/chklref.tar.gz}.
 
 \usepackage[english]{babel}
 \def\chk{{\it chklref}}
+
+\makeatletter
+
+\ifx\HCode\undefined%
+\def\page{}%
+\def\endpage{}%
+\else%
+\def\page{\HCode{<div id='page'>}}%
+\def\endpage{\HCode{</div>}}%
+\fi
+\makeatother
 
 
 
 \title{Check \LaTeX\ references : chklref\\
 {\large version 1.0}}
 \date{\today}
-\author{J\'er\^ome Lelong\footnote{Email:\texttt{jerome.lelong@gmail.com}}}
+\author{J\'er\^ome Lelong}
   
 
 \begin{document}
+\page
 \maketitle
 
 \begin{abstract} Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file
@@ -116,9 +129,14 @@ installation.
 
 \section{Source code}
 
-The source code is distributed under the GPL license version 3 or above in the
+The source code is available from
+\url{http://cermics.enpc.fr/~lelong/prog/chklref/chklref.tar.gz}.
+\\
+
+\noindent It is distributed under the GPL license version 3 or above in the
 hope it will be usefull but without any warrany. In the case you find a bug in
 the code, could you send me a mail to \verb!jerome.lelong@gmail.com! describing
 the problem with a minimal \TeX\ file to reproduce the problem.
 
+\endpage
 \end{document}
