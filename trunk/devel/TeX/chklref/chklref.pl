@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.10 $
+# * $Revision: 1.11 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-27 15:13:38 $
+# * $Date: 2008-01-28 11:46:52 $
 
 
 #########################################################################
@@ -27,7 +27,7 @@
 @math_modes = ( "equation","eqnarray","align", "multline" );
 
 ## labels starting with the following prefixes are ignored
-@ignore_labels = ("hyp:");
+@ignore_labels = ();
 
 ## creates a hash with two keys "str" and "line" and returns a
 ## reference to it
@@ -80,8 +80,13 @@ sub tex_parse
     my ($str, $begin, $end, $star, $labeled_env, $label);
     my $math_mode = join('|', @math_modes);
     $math_mode = "($math_mode)";
-    my $ignore_label = join('|', @ignore_labels);
-    $ignore_label = "(?:$ignore_label)";
+    my $ignore_label = "";
+    unless (@ignore_labels == ())
+    {
+        $ignore_label = join('|', @ignore_labels);
+        $ignore_label = "(?:$ignore_label)";
+    }
+   
     open (FIC, $file) or die("open: $!");
     ## jump to the beginning of the document
     while (<FIC>)
@@ -224,6 +229,11 @@ sub rm_duplicate
     
 # }
 
+if (@ARGV == 0)
+{
+    print("chklref needs one argument.\n");
+    exit 0;
+}
 ($entries, $labels, $refs)=tex_parse $ARGV[0];
 @labels = sort { $a->{str} cmp $b->{str} } @$labels ;
 @refs = sort { $a->{str} cmp $b->{str} } @$refs ;
