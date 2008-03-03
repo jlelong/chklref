@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.12 $
+# * $Revision: 1.13 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-01-28 13:27:32 $
+# * $Date: 2008-03-03 17:52:54 $
 
 
 #########################################################################
@@ -70,13 +70,11 @@ sub new_math_env
 ## togetther with the name of the environment. One last variable is
 ## used to remember if the stared environment was used.
 ##
-## Input: a tex file
+## Input: a tex file, entries, refs, labels
+## last 3 args are passed by reference and are modified
 sub tex_parse
 {
-    my ($file) = @_;
-    my @entries = ();
-    my @refs = ();
-    my @labels = ();
+    my ($file,$entries,$refs,$labels) = @_;
     my ($str, $begin, $end, $star, $labeled_env, $label);
     my $have_star_mode = join('|', @have_star_modes);
     $have_star_mode = "($have_star_mode)";
@@ -97,12 +95,12 @@ sub tex_parse
     {
         if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/o)
         {
-            push(@labels, new_ref($1, $.)) ;
+            push(@$labels, new_ref($1, $.)) ;
         } else
         {
             while (/\G[^%]*?\\(eq)*ref{([^{}]*)}/go)
             {
-                push(@refs, new_ref($2,$.));
+                push(@$refs, new_ref($2,$.));
             }
         }
         if (/^[^%]*\\begin[ ]*{$have_star_mode(\**)}
@@ -112,7 +110,7 @@ sub tex_parse
             $labeled_env = 0;
             if ($3)
             {
-                push(@labels, new_ref($4, $.)) ;
+                push(@$labels, new_ref($4, $.)) ;
                 $labeled_env = $.;
             }
             $star = 1; 
@@ -122,31 +120,31 @@ sub tex_parse
             {
                 if (m/^[^%]*\\label{([^{}]*)}/o)
                 {
-                    push(@labels, new_ref($1, $.));
+                    push(@$labels, new_ref($1, $.));
                     $label=$1;
                     $labeled_env = $.;
                 } else
                 {
                     while (m/\G[^%]*\\(eq)*ref{([^{}]*)}/go)
                     {
-                        push(@refs, new_ref($2,$.));
+                        push(@$refs, new_ref($2,$.));
                     }
                 }
                 if (m/^[^%]*\\end[ ]*{$str\*{$star}}/)
                 {
                     $end = $.;
                     $entry = new_math_env($str, $begin, $end, $star, $labeled_env, $label);
-                    push(@entries, $entry);
+                    push(@$entries, $entry);
                     last;
                 }
             }
         } 
     }
     close FIC;
-    return (\@entries, \@labels, \@refs);
 }
 
 ## find labeled and starred environments
+## Input : list of entries
 sub star_label
 {
     my ($entries) = @_;
@@ -167,9 +165,9 @@ sub star_label
 
 ## find labels without any corresponding refs.
 ## refs must be sorted
-## possibly it should
+##
+## Not Implemented Yet : it should
 ## also check for refs correpsonding to no label
-
 sub unused_label
 {
     my ($labels, $refs) = @_;
@@ -200,6 +198,8 @@ sub unused_label
 ## find and remove duplicates in an
 ## array of { str, line } entries.
 ## Note that the array must be sorted according to str
+## Input : ref or label list
+## returns the corresponding list 
 sub rm_duplicate
 {
     my ($array) = @_;
@@ -234,9 +234,18 @@ if (@ARGV == 0)
     print("chklref needs one argument.\n");
     exit 0;
 }
-($entries, $labels, $refs)=tex_parse $ARGV[0];
-@labels = sort { $a->{str} cmp $b->{str} } @$labels ;
-@refs = sort { $a->{str} cmp $b->{str} } @$refs ;
+
+@entries=();
+@refs=();
+@labels=();
+foreach $arg (@ARGV)
+{
+    tex_parse($arg, \@entries, \@refs, \@labels) ;
+}
+
+
+@labels = sort { $a->{line} cmp $b->{line} } @labels ;
+@refs = sort { $a->{str} cmp $b->{str} } @refs ;
 $uniq_refs = rm_duplicate(\@refs);
-star_label($entries);
-unused_label($labels, $uniq_refs);
+star_label(\@entries);
+unused_label(\@labels, $uniq_refs);

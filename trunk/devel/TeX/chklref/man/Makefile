@@ -6,9 +6,9 @@
 # January 2008.
 #
 
-LATEX = /usr/bin/latex
-DVIPS = /usr/bin/dvips
-GS = /usr/bin/gs
+LATEX = /sw/bin/latex
+DVIPS = /sw/bin/dvips
+GS = /sw/bin/gs
 datarootdir = /usr/local/share
 mandir = /usr/local/share/doc
 
