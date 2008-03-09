@@ -3,6 +3,8 @@ installdir = @installdir@
 bindir = @bindir@
 distfiles = @distfiles@
 
+VERSION=$(shell cat VERSION)
+
 all::
 	(cd man; make all)
 
@@ -19,13 +21,13 @@ uninstall::
 
 dist::
 	rm -rf chklref
-	mkdir -p chklref
+	mkdir -p chklref-${VERSION}
 	for file in ${distfiles}; do\
 		mkdir -p `dirname $$file`;\
-		cp --parent $$file chklref;\
+		cp --parent $$file chklref-${VERSION};\
 	done
-	tar cf - chklref | gzip > chklref.tar.gz
-	rm -r chklref
+	tar cf - chklref-${VERSION} | gzip > chklref-${VERSION}.tar.gz
+	rm -r chklref-${VERSION}
 
 clean::
 	(cd man; make clean)
