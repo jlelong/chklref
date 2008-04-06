@@ -1,7 +1,6 @@
 %% -*-mode: tex-mode -*-
 
 \makeatletter
-\usepackage{ifthen}
 \gdef\currentfile{\jobname.tex}
 
 \newwrite\chk@write
@@ -20,13 +19,13 @@
 
 \let\begin@orig=\begin
 \def\begin#1{%
-        \chk@print{begin #1 line \the\inputlineno\space file \currentfile}%
+        \chk@print{begin{#1} line \the\inputlineno\space file \currentfile}%
         \begin@orig{#1}%
 }
 
 \let\end@orig=\end
 \def\end#1{%
-        \chk@print{begin #1 line \the\inputlineno\space file \currentfile}%
+        \chk@print{end{#1} line \the\inputlineno\space file \currentfile}%
         \end@orig{#1}%
 }
 
@@ -40,8 +39,5 @@
 \def\ref#1{%
   \chk@print{ref #1 line \the\inputlineno\space file \currentfile}
   \ref@orig{#1}}
-
-
-
 
 \makeatother
