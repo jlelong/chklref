@@ -20,7 +20,7 @@ uninstall::
 
 
 dist::
-	rm -rf chklref
+	rm -rf chklref-${VERSION}
 	mkdir -p chklref-${VERSION}
 	for file in ${distfiles}; do\
 		mkdir -p `dirname $$file`;\

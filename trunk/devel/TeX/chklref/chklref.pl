@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.13 $
+# * $Revision: 1.14 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chklref.pl,v $
-# * $Date: 2008-03-03 17:52:54 $
+# * $Date: 2008-04-06 20:26:32 $
 
 
 #########################################################################
@@ -35,9 +35,9 @@
 ## Input: 2 args a string and a line number
 sub new_ref
 {
-    my ($str, $line) = @_;
+    my ($str, $line, $file) = @_;
     my $ref = {};
-    $ref->{str}=$str; $ref->{line}=$line;
+    $ref->{str}=$str; $ref->{line}=$line; $ref->{file}=$file;
     return $ref;
 }
 
@@ -54,7 +54,7 @@ sub new_ref
 ##    value of the label
 sub new_math_env
 {
-    my ($str, $begin, $end, $star, $label_line, $label) = @_;
+    my ($str, $begin, $end, $star, $label_line, $label, $file) = @_;
     my $this = {};
     $this->{str} = $str;
     $this->{begin} = $begin;
@@ -62,6 +62,7 @@ sub new_math_env
     $this->{star} = $star;
     $this->{label_line} = $label_line;
     $this->{label} = $label;
+    $this->{file}=$file;
     return $this;
 }
 
@@ -86,21 +87,21 @@ sub tex_parse
     }
    
     open (FIC, $file) or die("open: $!");
-    ## jump to the beginning of the document
-    while (<FIC>)
-    {
-        last if (m/^[^%]*\\begin{document}/o);
-    }
+#     ## jump to the beginning of the document
+#     while (<FIC>)
+#     {
+#         last if (m/^[^%]*\\begin{document}/o);
+#     }
     while (<FIC>)
     {
         if (m/^[^%]*\\label{(?!$ignore_label)([^{}]*)}/o)
         {
-            push(@$labels, new_ref($1, $.)) ;
+            push(@$labels, new_ref($1, $., $file)) ;
         } else
         {
             while (/\G[^%]*?\\(eq)*ref{([^{}]*)}/go)
             {
-                push(@$refs, new_ref($2,$.));
+                push(@$refs, new_ref($2,$., $file));
             }
         }
         if (/^[^%]*\\begin[ ]*{$have_star_mode(\**)}
@@ -110,7 +111,7 @@ sub tex_parse
             $labeled_env = 0;
             if ($3)
             {
-                push(@$labels, new_ref($4, $.)) ;
+                push(@$labels, new_ref($4, $., $file)) ;
                 $labeled_env = $.;
             }
             $star = 1; 
@@ -120,7 +121,7 @@ sub tex_parse
             {
                 if (m/^[^%]*\\label{([^{}]*)}/o)
                 {
-                    push(@$labels, new_ref($1, $.));
+                    push(@$labels, new_ref($1, $., $file));
                     $label=$1;
                     $labeled_env = $.;
                 } else
@@ -133,7 +134,7 @@ sub tex_parse
                 if (m/^[^%]*\\end[ ]*{$str\*{$star}}/)
                 {
                     $end = $.;
-                    $entry = new_math_env($str, $begin, $end, $star, $labeled_env, $label);
+                    $entry = new_math_env($str, $begin, $end, $star, $labeled_env, $label, $file);
                     push(@$entries, $entry);
                     last;
                 }
@@ -154,10 +155,10 @@ sub star_label
 ************************************\n";
     foreach $e (@$entries)
     {
-        printf("line %4d : remove label %s \n", $e->{label_line}, $e->{label})
+        printf("%s line %4d : remove label %s \n", $e->{file}, $e->{label_line}, $e->{label})
         if (($e->{star} == 1) && ($e->{label_line} > 0));
 
-        printf("line %4d : consider using a STAR environment\n", $e->{begin})
+        printf("%s line %4d : consider using a STAR environment\n", $e->{file}, $e->{begin})
         if (($e->{star} == 0) && ($e->{label_line} == 0));
     }
     print "\n";
@@ -189,7 +190,7 @@ sub unused_label
                 last;
             }
         }
-        printf("line %4d : remove label %s\n",$l->{line}, $l->{str})  if (!$found);
+        printf("%s line %4d : remove label %s\n", $l->{file}, $l->{line}, $l->{str})  if (!$found);
     }
     print "\n";
 }
