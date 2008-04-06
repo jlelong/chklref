@@ -1,0 +1,118 @@
+\section{Options d'échange}
+
+\subsubsection*{Définition du modèle}
+
+On considère un modèle de \BS\ en dimension $2$. On pose $S_{t}=\left(S_{t}^{1},
+  S_{t}^{2}\right)$ le vecteur des cours des actifs. Soit $\left(W_{t}^1,
+  W_t^2\right)_{t\ge 0}$ $2$ mouvements Browniens standards de matrice de
+corrélation $\Gamma = \begin{pmatrix}
+  1 & \rho \\
+  \rho & 1
+\end{pmatrix}$, avec $-1 < \rho < 1$ et de racine carrée $L$, obtenue par
+factorisation de Cholesky par exemple. Soit $r$ le taux d'intérêt (supposé
+constant), $\sigma = (\sigma_1, \dots, \sigma_d)$ le vecteur des  volatilités et
+$S_{0}:=\left(S_{0}^{1},S_{0}^{2}\right)$ le vecteur des valeurs initiales des
+actifs (supposées déterministes). La dynamique du cours de l'actif $i$ est
+donnée par
+\begin{equation}
+  \label{eq:dS_u_v}
+  dS_{t}^{i}=S_{t}^{i}\left(r\,dt + \sigma_{i} \, d W_t^i\right),
+\end{equation}
+ou de manière équivalente par
+\begin{equation*}
+  dS_{t}^{i}=S_{t}^{i}\left(r \,dt + \sigma_{i} \,L_i d B_t\right),
+\end{equation*}
+avec $B$ un M.B en dimension $2$ et $L_i$ la $i^{eme}-$ligne de la
+matrice $L$. On note $\cf=\sigma(W)=\sigma(B)$.
+
+On souhaite calculer le prix de l'option d'échange de payoff $(S_T^1 - S_T^2)_+$
+donné par
+\begin{equation}
+  \label{eq:prix_echange}
+  \expp{-r T} \espbracket{(S_T^1 - S_T^2)_+}.
+\end{equation}
+
+\subsubsection*{Travail demandé}
+
+\begin{itemize}
+\item Donner une formule fermée pour le prix~\eqref{eq:prix_echange}.
+\item Implémenter la calcul de \eqref{eq:prix_echange} par une méthode de Monte
+  Carlo classique.
+\item Implémenter la calcul de \eqref{eq:prix_echange} par une méthode de Monte
+  Carlo utilisant une technique de réduction de variance basée sur le conditionnement.
+\item Comparer les variances empiriques obtenues pour chacun des deux estimateurs.
+\end{itemize}
+
+
+\section{Pricing des options asiatiques par méthode de Monte Carlo et méthodes
+  d'arbre}
+
+On s'intéresse au pricing du call asiatique à strike fixe de payoff
+\begin{align*}
+  \left(\frac{1}{T}\int_0^T S_u du -K\right)_+
+\end{align*}
+dans le modèle de Black Scholes
+\begin{itemize}
+\item Implémenter une méthode de Monte Carlo simple pour évaluer le prix du call
+  asiatique
+  \begin{equation}
+    \label{eq:prix_asiatique}
+    C=\espbracket{e^{-rT}\left(\frac{1}{T}\int_0^T S_u du -K\right)_+}.
+  \end{equation}
+\item Implémenter la technique de réduction de variance de Kemna et Vorst vue
+  dans le cours MAE51.
+\item Implémenter le calcul du prix dans le modèle d'arbre CRR. On approche le
+  sous-jacent $S$ par l'arbre binômial à $N$ pas de temps suivant
+  \begin{align*}
+    S_{n+1}=\left\{
+      \begin{array}{cl}
+        S_n e^{\sigma \sqrt{h}} & \mbox{avec probabilité }p\\
+        S_n e^{-\sigma \sqrt{h}} & \mbox{avec probabilité }1-p
+      \end{array}\right.
+  \end{align*} où $h=\frac{T}{N}$ et $p=\frac{e^{\sigma
+      \sqrt{h}}-e^{rh}}{e^{\sigma \sqrt{h}}-e^{-\sigma \sqrt{h}}}$. On approche
+  $C$ défini par l'équation~\eqref{eq:prix_asiatique} par
+  \begin{align*}
+    C^N_0=(1+R)^{-N}\espbracket{\frac{1}{N}\left(\sum_{j=1}^{N-1}
+        S_j+\frac{S_0+S_N}{2}\right)},
+  \end{align*}
+  où $R$ est tel que $1+R=e^{rh}$.
+  On rappelle que $C^N_n$, le prix du call asiatique à l'instant $n$, peut
+  s'écrire comme $C^N_n(n,S_0,\cdots,S_n)$. On rappelle aussi que puisque le
+  prix actualisé de l'option est une martingale, on a
+  \begin{align*}
+    C^N_n(n,S_0,\cdots,S_n)=\frac{1}{1+R}&\left(p
+      C^N_{n+1}(n+1,S_0,\cdots,S_n,S_ne^{-\sigma \sqrt{h}})\right.\\
+    &\left.+(1-p)C^N_{n+1}(n+1,S_0,\cdots,S_n,S_ne^{\sigma \sqrt{h}})\right).
+  \end{align*}
+  On notera $\displaystyle I_n=\frac{1}{n}\left(\sum_{j=1}^{n-1}
+    S_j+\frac{S_0+S_n}{2}\right)$ la valeur approchée de l'intégrale
+  $\displaystyle\frac{1}{nh}\int_0^{nh} S_u du$, et on montrera que
+  \begin{align*}
+    I_{n+1}=\frac{n}{n+1}I_n+\frac{S_n+S_{n+1}}{2}.
+  \end{align*}
+\item Comparer les 3 méthodes.
+\end{itemize}
+
+\section{Pricing des options barrières par formule fermée et par ponts
+  Browniens}
+
+On considère une option barrière call down and In dans le modèle de
+Black Scholes, c'est à dire de payoff
+
+\begin{align}
+  \label{eq:pipo}
+  (S_T-K)_+\ind{\exists u \le T \,:\, S_u \le L}.
+\end{align}
+
+pipo
+
+\begin{itemize}
+\item En utilisant la loi du couple $(W_T,\inf_{u\le T} W_u)$ rappelée en annexe
+  donner une formule fermée pour le prix du Call Down and In.
+\item Implémenter une méthode de Monte Carlo pour calculer le prix.
+\item Utiliser les ponts Browniens pour estimer la probabilité de franchement de
+  la barrière entre deux instants de discrétisation et implémenter la méthode de
+  Monte Carlo améliorée ainsi obtenue.
+\end{itemize}
+
