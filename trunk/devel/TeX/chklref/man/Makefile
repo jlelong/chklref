@@ -9,7 +9,18 @@
 LATEX = /sw/bin/latex
 DVIPS = /sw/bin/dvips
 GS = /sw/bin/gs
-datarootdir = /usr/local/share
+INSTALL = /sw/bin/ginstall -c
+PKGNAME = chklref
+TEXMFLOCAL = /sw/share/texmf-local
+prefix = /usr/local
+installdir = @installdir@
+bindir = /usr/local/bin
+datadir = /usr/local/share
+binfiles = chklref
+distfiles = configure configure.in chklref.sty chklref.in chkparser README Makefile.in man/manual.tex man/Makefile.in VERSION
+sharefiles = chkparser
+texfiles = chklref.sty
+texmf_prefix = $(TEXMFLOCAL)/tex/latex/$(PKGNAME)
 mandir = /usr/local/share/doc
 
 all: manual.pdf
@@ -25,11 +36,13 @@ manual.pdf: manual.dvi
 	$(DVIPS) -q -f $< | $(GS) -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$@ -
 
 install:
-	mkdir -p $(mandir)
-	cp manual.pdf $(mandir)/chkltex.pdf
+	mkdir -p $(mandir)/$(PKGNAME)
+	$(INSTALL) manual.pdf $(mandir)/$(PKGNAME)/chklref.pdf
 
 uninstall:
-	rm -f $(mandir)/chklref.pdf
+	$(RM) $(mandir)/$(PKGNAME)/chklref.pdf
+	$(RM) $(mandir)/$(PKGNAME)/README
+	rmdir $(mandir)/$(PKGNAME)
 
 
 clean:

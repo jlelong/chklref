@@ -1,7 +1,17 @@
-
+INSTALL = @INSTALL@
+PKGNAME = @PKGNAME@
+TEXMFLOCAL = @TEXMFLOCAL@
+prefix = @prefix@
 installdir = @installdir@
 bindir = @bindir@
+datadir = @datadir@
+binfiles = @binfiles@
 distfiles = @distfiles@
+sharefiles = @sharefiles@
+texfiles = @texfiles@
+texmf_prefix = $(TEXMFLOCAL)/tex/latex/$(PKGNAME)
+mandir = @mandir@
+
 
 VERSION=$(shell cat VERSION)
 
@@ -11,8 +21,14 @@ all::
 install::
 	(cd man; make install )
 	mkdir -p ${bindir}
-	cp chklref.pl ${bindir}/chklref
-	chmod ugo+x ${bindir}/chklref
+	$(INSTALL) -m 755 $(binfiles) $(bindir)
+	mkdir -p $(datadir)/$(PKGNAME)
+	$(INSTALL) -m 644 $(sharefiles) $(datadir)/$(PKGNAME)
+	mkdir -p $(texmf_prefix)
+	$(INSTALL) -m 644 $(texfiles) $(texmf_prefix)
+	texhash $(TEXMFLOCAL)
+	$(INSTALL) README $(mandir)/$(PKGNAME)/
+
 
 uninstall::
 	rm -f ${bindir}/chklref
