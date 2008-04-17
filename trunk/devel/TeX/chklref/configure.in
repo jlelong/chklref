@@ -1,4 +1,4 @@
-AC_REVISION($Revision: 1.9 $)
+AC_REVISION($Revision: 1.10 $)
 AC_INIT(chklref,1.0, jerome.lelong@gmail.com)
 
 PKGNAME=chklref
@@ -50,7 +50,7 @@ if test "x$gs_path" = "x" ; then
 fi
 
 texmf_cnf=$(kpsewhich texmf.cnf);
-TEXMFLOCAL=$(grep -e 'TEXMFLOCAL[ ]*=[ ]*' $texmf_cnf | sed 's/TEXMFLOCAL[ ]*=[ ]*//')
+TEXMFLOCAL=$(grep -e 'TEXMFLOCAL[ ]*=[ ]*' $texmf_cnf | sed 's/TEXMFLOCAL[ ]*=[ ]*//' | tail -n 1)
 AC_SUBST(TEXMFLOCAL)
 
 
