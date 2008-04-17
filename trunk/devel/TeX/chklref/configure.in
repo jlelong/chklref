@@ -1,4 +1,4 @@
-AC_REVISION($Revision: 1.8 $)
+AC_REVISION($Revision: 1.9 $)
 AC_INIT(chklref,1.0, jerome.lelong@gmail.com)
 
 PKGNAME=chklref
@@ -11,8 +11,7 @@ fi
 installdir=${prefix}
 bindir=${installdir}/bin
 datarootdir=${installdir}/share
-datadir=${datarootdir}
-mandir=${datadir}/doc
+mandir=${datarootdir}/doc
 distfiles="configure configure.in chklref.sty chklref.in chkparser README \
 Makefile.in man/manual.tex man/Makefile.in VERSION"
 sharefiles="chkparser"
@@ -27,7 +26,7 @@ AC_SUBST(distfiles)
 AC_SUBST(binfiles)
 AC_SUBST(sharefiles)
 AC_SUBST(texfiles)
-AC_SUBST(datadir)
+AC_SUBST(datarootdir)
 
 AC_PATH_PROG(latex_path, latex)
 if test "x$latex_path" = "x" ; then    

@@ -24,7 +24,7 @@
 
 PERL=@perl_path@
 LATEX=@latex_path@
-DATADIR=@datadir@
+DATAROOTDIR=@datarootdir@
 
 if [[ $# != 1 ]]; then
     echo "usage : chklref file.tex";
@@ -37,5 +37,5 @@ echo "references and environment declaration"
 $LATEX --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$1}" #&> /dev/null
 
-$PERL $DATADIR/chklref/chkparser $1.chk
+$PERL $DATAROOTDIR/chklref/chkparser $1.chk
 

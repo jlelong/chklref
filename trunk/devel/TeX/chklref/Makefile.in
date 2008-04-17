@@ -4,7 +4,7 @@ TEXMFLOCAL = @TEXMFLOCAL@
 prefix = @prefix@
 installdir = @installdir@
 bindir = @bindir@
-datadir = @datadir@
+datarootdir = @datarootdir@
 binfiles = @binfiles@
 distfiles = @distfiles@
 sharefiles = @sharefiles@
@@ -22,8 +22,8 @@ install::
 	(cd man; make install )
 	mkdir -p ${bindir}
 	$(INSTALL) -m 755 $(binfiles) $(bindir)
-	mkdir -p $(datadir)/$(PKGNAME)
-	$(INSTALL) -m 644 $(sharefiles) $(datadir)/$(PKGNAME)
+	mkdir -p $(datarootdir)/$(PKGNAME)
+	$(INSTALL) -m 644 $(sharefiles) $(datarootdir)/$(PKGNAME)
 	mkdir -p $(texmf_prefix)
 	$(INSTALL) -m 644 $(texfiles) $(texmf_prefix)
 	texhash $(TEXMFLOCAL)

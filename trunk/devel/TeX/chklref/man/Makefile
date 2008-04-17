@@ -6,16 +6,17 @@
 # January 2008.
 #
 
-LATEX = /sw/bin/latex
-DVIPS = /sw/bin/dvips
-GS = /sw/bin/gs
-INSTALL = /sw/bin/ginstall -c
+LATEX = /usr/bin/latex
+DVIPS = /usr/bin/dvips
+GS = /usr/bin/gs
+INSTALL = /usr/bin/install -c
 PKGNAME = chklref
-TEXMFLOCAL = /sw/share/texmf-local
+TEXMFLOCAL = /usr/local/share/texmf
+/usr/local/share/texmf
 prefix = /usr/local
 installdir = @installdir@
 bindir = /usr/local/bin
-datadir = /usr/local/share
+datarootdir = /usr/local/share
 binfiles = chklref
 distfiles = configure configure.in chklref.sty chklref.in chkparser README Makefile.in man/manual.tex man/Makefile.in VERSION
 sharefiles = chkparser
