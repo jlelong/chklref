@@ -2,7 +2,6 @@ INSTALL = @INSTALL@
 PKGNAME = @PKGNAME@
 TEXMFLOCAL = @TEXMFLOCAL@
 prefix = @prefix@
-installdir = @installdir@
 bindir = @bindir@
 datarootdir = @datarootdir@
 binfiles = @binfiles@
