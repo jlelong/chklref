@@ -2,6 +2,7 @@
 
 \NeedsTeXFormat{LaTeX2e}%
 \ProvidesPackage{chklref}%
+\RequirePackage{afterpackage}
 [2008/04/12\space v2.0]
 
 \gdef\currentfile{\jobname.tex}
@@ -32,37 +33,31 @@
    \end@orig{#1}%
 }
 
+\AfterPackage{hyperref}{
+  \AtBeginDocument{%
+    \let\label@orig=\label
+    \def\label#1{%
+      \label@orig{#1}%
+      \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+    
+    \let\ref@orig=\ref
+    \def\ref#1{%
+      \ref@orig{#1}%
+      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+  }
+}
 
 \AtBeginDocument{%
-\let\label@orig=\label
-\def\label#1{%
-  \label@orig{#1}%
-  \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
-
-\let\ref@orig=\ref
-%% \def\ref#1{%
-%%   \ref@orig{#1}%
-%%   \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
-
-
-\expandafter\DeclareRobustCommand\expandafter
-  {\csname relax\string\ref\endcsname}[1]{\ref@orig{#1}%
-    \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}%
-\expandafter\let\expandafter\ref\csname relax\string\ref\endcsname
-
-
-\@ifpackageloaded{amsmath}{% With AMS-LaTeX tags
-\let\label@in@display@orig=\label@in@display
-\def\label@in@display#1{%
-  \chk@print{label #1 line \the\inputlineno\space file \currentfile}
-  \label@in@display@orig{#1}}
-
-\let\eqref@orig=\eqref
-\def\eqref#1{%
-  \chk@print{ref #1 line \the\inputlineno\space file \currentfile}
-  \eqref@orig{#1}}
-  
-}%
-
+  \@ifpackageloaded{amsmath}{% With AMS-LaTeX tags
+    \let\label@in@display@orig=\label@in@display
+    \def\label@in@display#1{%
+      \chk@print{label #1 line \the\inputlineno\space file \currentfile}
+      \label@in@display@orig{#1}}
+    
+    \let\eqref@orig=\eqref
+    \def\eqref#1{%
+      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}
+      \eqref@orig{#1}}
+  }%
 }
 \endinput
