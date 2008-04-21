@@ -37,5 +37,5 @@ echo "references and environment declaration"
 $LATEX --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$1}" #&> /dev/null
 
-$PERL $DATAROOTDIR/chklref/chkparser $1.chk
-
+#$PERL $DATAROOTDIR/chklref/chkparser $1.chk
+$PERL ./chkparser $1.chk
