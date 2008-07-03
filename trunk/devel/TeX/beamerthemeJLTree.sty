@@ -1,8 +1,8 @@
 
 %% * $Author: lelong $
-%% * $Revision: 1.4 $
+%% * $Revision: 1.5 $
 %% * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/beamerthemeJLTree.sty,v $
-%% * $Date: 2007-09-11 16:39:21 $
+%% * $Date: 2008-07-03 08:54:58 $
 
 %% This file can be modified or redistributed under the terms of Gnu Public
 %% License version 1 or 2.
@@ -36,7 +36,7 @@
     \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,left]{title in head/foot}%
       \usebeamerfont{title in head/foot}\hspace*{2ex}\insertshortauthor %
       \if\beamer@shortinstitute\empty\else\hspace*{1ex}\insertshortinstitute\fi%
-      \hspace*{2ex} \insertdate
+      \hspace*{2ex} \if\beamer@shortdate\empty\insertdate\else\insertshortdate\fi%
     \end{beamercolorbox}%
     \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
       \usebeamerfont{date in head/foot}
