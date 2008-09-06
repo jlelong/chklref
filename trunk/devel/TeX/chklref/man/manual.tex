@@ -6,7 +6,7 @@
 \usepackage{amssymb, amsmath, amsthm}
 \usepackage[latin1]{inputenc}
 \usepackage{enumitem}
-\usepackage[dvips=true]{hyperref}
+\usepackage[dvips=true,bookmarks=false]{hyperref}
 \usepackage[english]{babel}
 
 %%--------------------------------------------
@@ -31,7 +31,8 @@
 
 
 
-\title{Check \LaTeX\ references : chklref}
+\title{Check \LaTeX\ references : chklref \\
+Version 2.0}
 \date{\today}
 \author{J\'er\^ome Lelong}
   
@@ -106,21 +107,12 @@ line  313 : remove label eq:prog_dyn_prix
 Typical usage : \verb!chklref file.tex!.
 \\
 
-\noindent By modifying the variable \verb!@ignore_labels!, it is possible to ignore labels
-beginning with a given prefix in the process described above. This is
-particularly usefull if you happen to use other macros than \verb!\ref! and
-\verb!\eqref! to make references.
-\\
-
-\noindent For the moment, the following environment are tracked out to see if
-they should be starred : equation, eqnarray, align, multine, figure, table,
-tabular. This can be customized using the variable \verb!@have_star_modes! in the
-source file.
 
 \section{Requirements}
 
-\chk\ is written in Perl and should work with any standard Perl
-installation.
+\chk\ is written partly in \TeX, partly in Perl. The Perl part is very
+standard \textemdash\ it actually only parses the output of the \TeX\ part
+\textemdash\ and should work with any standard Perl installation.
 
 
 \section{Source code}

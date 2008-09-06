@@ -32,9 +32,11 @@ if [[ $# != 1 ]]; then
 fi
 
 basetexfile=$(basename $1 .tex)
+cp $1 $basetexfile.tex.chkbak
+$PERL -i -pe 's/\\input/\\Input/' $1
 echo "Running latex on $bastexfile.tex to collect labels,"
 echo "references and environment declaration"
 $LATEX --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$1}" &> /dev/null
-
+cp $basetexfile.tex.chkbak $1
 $PERL $DATAROOTDIR/chklref/chkparser $1.chk

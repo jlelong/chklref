@@ -45,4 +45,5 @@ dist::
 	rm -r chklref-${VERSION}
 
 clean::
+	$(RM) chklref 
 	(cd man; make clean)
