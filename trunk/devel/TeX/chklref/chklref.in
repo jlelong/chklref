@@ -35,7 +35,6 @@ basetexfile=$(basename $1 .tex)
 echo "Running latex on $bastexfile.tex to collect labels,"
 echo "references and environment declaration"
 $LATEX --interaction errorstopmode --jobname "$basetexfile" \
-    '\RequirePackage{chklref}\input' "{$1}" #&> /dev/null
+    '\RequirePackage{chklref}\input' "{$1}" &> /dev/null
 
-#$PERL $DATAROOTDIR/chklref/chkparser $1.chk
-$PERL ./chkparser $1.chk
+$PERL $DATAROOTDIR/chklref/chkparser $1.chk
