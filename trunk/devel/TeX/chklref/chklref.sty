@@ -54,10 +54,26 @@
       \chk@print{label #1 line \the\inputlineno\space file \currentfile}
       \label@in@display@orig{#1}}
     
+    \let\ref@orig=\ref
+    \def\ref#1{%
+      \ref@orig{#1}%
+      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+
     \let\eqref@orig=\eqref
     \def\eqref#1{%
       \chk@print{ref #1 line \the\inputlineno\space file \currentfile}
       \eqref@orig{#1}}
   }%
+  \@ifpackageloaded{hyperref}{}{%
+        \let\label@orig=\label
+    \def\label#1{%
+      \label@orig{#1}%
+      \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+    
+    \let\ref@orig=\ref
+    \def\ref#1{%
+      \ref@orig{#1}%
+      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+  }
 }
 \endinput
