@@ -1,5 +1,4 @@
-AC_REVISION($Revision: 1.10 $)
-AC_INIT(chklref,1.0, jerome.lelong@gmail.com)
+AC_INIT(chklref,2.1, jerome.lelong@gmail.com)
 
 PKGNAME=chklref
 AC_PROG_INSTALL
