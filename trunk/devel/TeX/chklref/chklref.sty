@@ -35,7 +35,11 @@
     \reserved@a}%
   \xdef\currentfile{\old@filename}%
 }
-\def\@chk@@input#1 {\input@orig #1}
+\def\@chk@@input#1 { %
+  \gdef\currentfile{#1}%
+  \input@orig #1%
+  \xdef\currentfile{\old@filename}%
+}
 
 
 \let\begin@orig=\begin
