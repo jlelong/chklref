@@ -26,17 +26,29 @@ PERL=@perl_path@
 LATEX=@latex_path@
 DATAROOTDIR=@datarootdir@
 
-if [[ $# != 1 ]]; then
-    echo "usage : chklref file.tex";
-    exit 0;
-fi
+print_usage()
+{
+    echo -e "usage: chklref [-q] file[.tex]";
+    echo -e "\t-q : latex runs silently";
+    echo -e "\t-h : displays this help";
+
+}
+
+out='/dev/stdout'
+while getopts "qh" Option
+do
+    case $Option in
+        h) print_usage; exit 0;;
+        q) out='/dev/null';;
+        *) echo "illegal option"; print_usage; exit 0;;
+    esac
+done
+shift $(($OPTIND - 1))
+
 
 basetexfile=$(basename $1 .tex)
-cp $1 $basetexfile.tex.chkbak
-$PERL -i -pe 's/\\input/\\Input/' $1
 echo "Running latex on $bastexfile.tex to collect labels,"
 echo "references and environment declaration"
 $LATEX --interaction errorstopmode --jobname "$basetexfile" \
-    '\RequirePackage{chklref}\input' "{$1}" &> /dev/null
-cp $basetexfile.tex.chkbak $1
-$PERL $DATAROOTDIR/chklref/chkparser $1.chk
+    '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
+$PERL $DATAROOTDIR/chklref/chkparser $basetexfile.tex.chk
