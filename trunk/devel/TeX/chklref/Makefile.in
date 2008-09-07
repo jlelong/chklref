@@ -37,10 +37,11 @@ uninstall::
 dist::
 	rm -rf chklref-${VERSION}
 	mkdir -p chklref-${VERSION}
-	for file in ${distfiles}; do\
-		mkdir -p `dirname $$file`;\
-		cp --parent $$file chklref-${VERSION};\
-	done
+	(cd chklref-${VERSION}; \
+	cvs export -D 'today' TeX/chklref ;\
+	mv TeX/chklref/* . ;\
+	$(RM) -r TeX/chklref ;\
+	$(RM) -r TeX )
 	tar cf - chklref-${VERSION} | gzip > chklref-${VERSION}.tar.gz
 	rm -r chklref-${VERSION}
 
