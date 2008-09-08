@@ -31,22 +31,29 @@ AC_PATH_PROG(latex_path, latex)
 if test "x$latex_path" = "x" ; then    
    AC_MSG_ERROR("latex not found")
 fi
-
+AC_PATH_PROG(pdflatex_path, pdflatex)
+if test "x$pdflatex_path" = "x" ; then    
+   AC_MSG_ERROR("pdflatex not found")
+fi
 AC_PATH_PROG(perl_path, perl)
 if test "x$perl_path" = "x" ; then    
    AC_MSG_ERROR("perl not found")
 fi
-
-
 AC_PATH_PROG(gs_path, gs)
 if test "x$gs_path" = "x" ; then    
    AC_MSG_ERROR("ghostscript interpreter not found")
 fi
-
 AC_PATH_PROG(dvips_path, dvips)
 if test "x$gs_path" = "x" ; then    
    AC_MSG_ERROR("dvips not found")
 fi
+
+AC_SUBST(latex_path)
+AC_SUBST(pdflatex_path)
+AC_SUBST(perl_path)
+AC_SUBST(gs_path)
+AC_SUBST(dvips_path)
+
 
 texmf_cnf=$(kpsewhich texmf.cnf);
 TEXMFLOCAL=$(grep -e 'TEXMFLOCAL[ ]*=[ ]*' $texmf_cnf | sed 's/TEXMFLOCAL[ ]*=[ ]*//' | tail -n 1)

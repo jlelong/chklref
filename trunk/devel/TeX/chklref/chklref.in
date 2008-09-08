@@ -24,20 +24,24 @@
 
 PERL=@perl_path@
 LATEX=@latex_path@
+PDFLATEX=@pdflatex_path@
 DATAROOTDIR=@datarootdir@
 
 print_usage()
 {
-    echo -e "usage: chklref [-q] file[.tex]";
+    echo -e "usage: chklref [-q] [-p] file[.tex]";
+    echo -e "\t-p : use pdflatex instead of latex";
     echo -e "\t-q : latex runs silently";
     echo -e "\t-h : displays this help";
 
 }
 
 out='/dev/stdout'
-while getopts "qh" Option
+latex_cmd=$LATEX
+while getopts "pqh" Option
 do
     case $Option in
+        p) latex_cmd=$PDFLATEX;;
         h) print_usage; exit 0;;
         q) out='/dev/null';;
         *) echo "illegal option"; print_usage; exit 0;;
@@ -45,10 +49,15 @@ do
 done
 shift $(($OPTIND - 1))
 
+if [ $# -ne 1 ]; then
+    print_usage; exit 0;
+fi
+
 
 basetexfile=$(basename $1 .tex)
-echo "Running latex on $bastexfile.tex to collect labels,"
-echo "references and environment declaration"
-$LATEX --interaction errorstopmode --jobname "$basetexfile" \
+echo "Running $latex_cmd on $bastexfile.tex to collect labels,"
+echo "references and environment declarations"
+$latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
 $PERL $DATAROOTDIR/chklref/chkparser $basetexfile.tex.chk
+rm $basetexfile.tex.chk
