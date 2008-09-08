@@ -5,7 +5,12 @@
 \RequirePackage{afterpackage}
 %%[2008/04/12\space v2.0]
 
-\gdef\currentfile{\jobname.tex}
+\xdef\currentfile{\jobname.tex}
+\xdef\old@filename{\jobname.tex}
+
+\def\push#1{\xdef\old@filename{{#1}\old@filename}} 
+\def\pop{\expandafter\popit\old@filename\theend}
+\def\popit#1#2\theend#3{\def#3{#1}\gdef\old@filename{#2}} 
 
 \newwrite\chk@write
 \immediate\openout\chk@write\jobname.tex.chk%
@@ -15,31 +20,35 @@
 
 \let\include@orig=\include
 \def\include#1{%
-  \let\old@filename=\currentfile%
+  \push{\currentfile}%
   \gdef\currentfile{#1.tex}%
   \include@orig{#1}%
-  \xdef\currentfile{\old@filename}%
+  \pop\@temp%
+  \xdef\currentfile{\@temp}%
 }
 
-
+\AtBeginDocument{%
 \let\input@orig\input
 \def\input{\@ifnextchar\bgroup\@chk@iinput\@chk@@input}
 \def\@chk@iinput#1{%
-  \let\old@filename=\currentfile
-  \gdef\currentfile{#1}%
-  \InputIfFileExists{#1}{\xdef\currentfile{#1}}%
+  \push{\currentfile}
+  \xdef\currentfile{#1}
+  \InputIfFileExists{#1}{}%
   {\filename@parse{#1}%
     \edef\reserved@a{\noexpand\@missingfileerror
       {\filename@area\filename@base}%
       {\ifx\filename@ext\relax tex\else\filename@ext\fi}}%
     \reserved@a}%
-  \xdef\currentfile{\old@filename}%
+  \pop\@temp%
+  \xdef\currentfile{\@temp}%
 }
 \def\@chk@@input#1 { %
+  \push{\currentfile}%
   \gdef\currentfile{#1}%
   \input@orig #1%
-  \xdef\currentfile{\old@filename}%
-}
+   \pop\@temp%
+  \xdef\currentfile{\@temp}%
+}}
 
 
 \let\begin@orig=\begin
