@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # * $Author: lelong $
-# * $Revision: 1.1 $
+# * $Revision: 1.2 $
 # * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chkparser,v $
-# * $Date: 2008-04-13 18:07:57 $
+# * $Date: 2008-10-05 10:34:24 $
 
 #########################################################################
 # Written and (C) by Jérôme Lelong <jerome.lelong@gmail.com>            #
@@ -80,20 +80,20 @@ sub chk_parse
     my ($txt, $entries, $refs, $labels) = @_;
     my ($str, $begin, $end, $star, $labeled_env, $label, $file, $entry, $l);
 
-    ## swap end and label commands in an array
-    my ($eline, $lline, $efile, $lfile);
-    my $prev = "";
-    for (my $i=0; $i < $#$txt; $i++)
-    {
-        $l = $$txt[$i];
-        if (   (($eline, $efile) = ($prev =~ /^end{[^{}]*} line (\d+) file (.+)$/))
-               && (($lline, $lfile) = ($l =~ /^label .+ line (\d+) file (.+)$/)))
-        {
-            $$txt[$i-1] = $l;
-            $$txt[$i] = $prev;
-        }
-        $prev = $l;
-    }
+#     ## swap end and label commands in an array
+#     my ($eline, $lline, $efile, $lfile);
+#     my $prev = "";
+#     for (my $i=0; $i < $#$txt; $i++)
+#     {
+#         $l = $$txt[$i];
+#         if (   (($eline, $efile) = ($prev =~ /^end{[^{}]*} line (\d+) file (.+)$/))
+#                && (($lline, $lfile) = ($l =~ /^label .+ line (\d+) file (.+)$/)))
+#         {
+#             $$txt[$i-1] = $l;
+#             $$txt[$i] = $prev;
+#         }
+#         $prev = $l;
+#     }
 
     while (defined($l = shift(@$txt)))
     {
