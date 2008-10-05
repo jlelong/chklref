@@ -29,21 +29,24 @@ DATAROOTDIR=@datarootdir@
 
 print_usage()
 {
-    echo -e "usage: chklref [-q] [-p] file[.tex]";
-    echo -e "\t-p : use pdflatex instead of latex";
-    echo -e "\t-q : latex runs silently";
-    echo -e "\t-h : displays this help";
+    echo  "usage: chklref [-d] [-q] [-p] file[.tex]";
+    echo  "\t-p : use pdflatex instead of latex";
+    echo  "\t-q : latex runs silently";
+    echo  "\t-d : debugging mode";
+    echo  "\t-h : displays this help";
 
 }
 
 out='/dev/stdout'
 latex_cmd=$LATEX
-while getopts "pqh" Option
+debug=0
+while getopts "pqhd" Option
 do
     case $Option in
         p) latex_cmd=$PDFLATEX;;
         h) print_usage; exit 0;;
         q) out='/dev/null';;
+        d) debug=1;;
         *) echo "illegal option"; print_usage; exit 0;;
     esac
 done
@@ -60,4 +63,4 @@ echo "references and environment declarations"
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
 $PERL $DATAROOTDIR/chklref/chkparser $basetexfile.tex.chk
-rm $basetexfile.tex.chk
+if (( ! $debug )) ; then rm $basetexfile.tex.chk; fi
