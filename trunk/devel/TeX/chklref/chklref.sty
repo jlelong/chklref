@@ -63,17 +63,46 @@
    \end@orig{#1}%
 }
 
+%% \AfterPackage{hyperref}{
+%%   \AtBeginDocument{%
+%%     \let\label@orig=\label
+%%     \def\label#1{%
+%%       \label@orig{#1}%
+%%       \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+    
+%%     \let\ref@orig=\ref
+%%     \def\ref#1{%
+%%       \ref@orig{#1}%
+%%       \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+%%   }
+%% }
+
 \AfterPackage{hyperref}{
   \AtBeginDocument{%
     \let\label@orig=\label
     \def\label#1{%
       \label@orig{#1}%
       \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
-    
-    \let\ref@orig=\ref
-    \def\ref#1{%
-      \ref@orig{#1}%
-      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+
+    \Hy@SetCatcodes
+    \def\HyPsd@ref#1{\HyPsd@@ref#1*\END}%
+    \def\HyPsd@@ref#1*#2\END{%
+      \ifx\\#2\\%
+        \HyPsd@@@ref{#1}%
+      \else
+        \expandafter\HyPsd@@@ref
+      \fi
+    }%
+    \def\HyPsd@@@ref#1{%
+      \expandafter\ifx\csname r@#1\endcsname\relax
+        ??%
+      \else
+        \expandafter\expandafter\expandafter\@car\csname r@#1\endcsname\@nil
+      \fi
+      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}%
+    }
+    \let\ref=\HyPsd@ref
+    \Hy@RestoreCatcodes
   }
 }
 
