@@ -8,7 +8,7 @@
   Simply run 
 	./configure
 	make
-	make install
+	sudo make install
 
   By default, the installation uses /usr/local as prefix. This
   behaviour can be changed by passing the --prefix=/new/prefix option
