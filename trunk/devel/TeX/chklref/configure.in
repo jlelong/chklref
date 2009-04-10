@@ -10,7 +10,8 @@ fi
 installdir=${prefix}
 distfiles="configure configure.in chklref.sty chklref.in chkparser README \
 Makefile.in man/manual.tex man/Makefile.in VERSION"
-binfiles="chklref chkparser"
+sharefiles="chkparser"
+binfiles="chklref"
 texfiles="chklref.sty"
 
 AC_SUBST(PKGNAME)

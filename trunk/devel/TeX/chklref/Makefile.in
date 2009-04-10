@@ -27,6 +27,8 @@ install::
 	(cd man; make install )
 	mkdir -p ${bindir}
 	$(INSTALL) -m 755 $(binfiles) $(bindir)
+	mkdir -p ${datarootdir}/$(PKGNAME)
+	$(INSTALL) -m 755 $(sharefiles) ${datarootdir}/$(PKGNAME)
 	mkdir -p $(latexdir)
 	$(INSTALL) -m 644 $(texfiles) $(latexdir)
 	$(INSTALL) README $(mandir)/$(PKGNAME)/
