@@ -1,16 +1,22 @@
+#
+# Jérôme Lelong <jerome.lelong@gmail.com>
+# 
+# January 2008.
+#
+
 INSTALL = @INSTALL@
 PKGNAME = @PKGNAME@
 TEXMFLOCAL = @TEXMFLOCAL@
 prefix = @prefix@
-bindir = @bindir@
-datarootdir = @datarootdir@
+bindir = ${prefix}/bin
+datarootdir = ${prefix}/share/
 binfiles = @binfiles@
 distfiles = @distfiles@
 sharefiles = @sharefiles@
 texfiles = @texfiles@
-texmf_prefix = $(TEXMFLOCAL)/tex/latex/$(PKGNAME)
-mandir = @mandir@
-
+texmf_prefix = $(prefix)/share/texmf
+mandir = ${prefix}/doc/
+latexdir=$(texmf_prefix)/tex/latex/$(PKGNAME)
 
 VERSION=$(shell cat VERSION)
 
@@ -21,13 +27,10 @@ install::
 	(cd man; make install )
 	mkdir -p ${bindir}
 	$(INSTALL) -m 755 $(binfiles) $(bindir)
-	mkdir -p $(datarootdir)/$(PKGNAME)
-	$(INSTALL) -m 644 $(sharefiles) $(datarootdir)/$(PKGNAME)
-	mkdir -p $(texmf_prefix)
-	$(INSTALL) -m 644 $(texfiles) $(texmf_prefix)
-	texhash $(TEXMFLOCAL)
+	mkdir -p $(latexdir)
+	$(INSTALL) -m 644 $(texfiles) $(latexdir)
 	$(INSTALL) README $(mandir)/$(PKGNAME)/
-
+	texhash
 
 uninstall::
 	rm -f ${bindir}/chklref
@@ -43,7 +46,7 @@ dist::
 	$(RM) -r TeX/chklref ;\
 	$(RM) -r TeX )
 	tar cf - chklref-${VERSION} | gzip > chklref-${VERSION}.tar.gz
-	rm -r chklref-${VERSION}
+	rm -rf chklref-${VERSION}
 
 clean::
 	$(RM) chklref 

@@ -6,21 +6,20 @@
 # January 2008.
 #
 
-LATEX = @latex_path@
-DVIPS = @dvips_path@
-GS = @gs_path@
 INSTALL = @INSTALL@
 PKGNAME = @PKGNAME@
 TEXMFLOCAL = @TEXMFLOCAL@
 prefix = @prefix@
-bindir = @bindir@
-datarootdir = @datarootdir@
+bindir = ${prefix}/bin
+datarootdir = ${prefix}/share/
 binfiles = @binfiles@
 distfiles = @distfiles@
 sharefiles = @sharefiles@
 texfiles = @texfiles@
-texmf_prefix = $(TEXMFLOCAL)/tex/latex/$(PKGNAME)
-mandir = @mandir@
+mandir = ${prefix}/doc/
+LATEX = @latex_path@
+DVIPS = @dvips_path@
+GS = @gs_path@
 
 all: manual.pdf
 
@@ -45,4 +44,4 @@ uninstall:
 
 
 clean:
-	rm -f manual.dvi manual.log manual.aux manual.out
+	\rm -f manual.dvi manual.log manual.aux manual.out manual.pdf

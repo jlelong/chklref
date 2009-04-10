@@ -22,10 +22,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>. #
 #########################################################################
 
+prefix=@prefix@
 PERL=@perl_path@
 LATEX=@latex_path@
 PDFLATEX=@pdflatex_path@
-DATAROOTDIR=@datarootdir@
 
 print_usage()
 {
@@ -62,5 +62,5 @@ echo "Running $latex_cmd on $bastexfile.tex to collect labels,"
 echo "references and environment declarations"
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
-$PERL $DATAROOTDIR/chklref/chkparser $basetexfile.tex.chk
+$PERL $prefix/share/chkparser $basetexfile.tex.chk
 if (( ! $debug )) ; then rm $basetexfile.tex.chk; fi
