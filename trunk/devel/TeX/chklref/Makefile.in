@@ -15,7 +15,7 @@ distfiles = @distfiles@
 sharefiles = @sharefiles@
 texfiles = @texfiles@
 texmf_prefix = $(prefix)/share/texmf
-mandir = ${prefix}/doc/
+mandir = ${prefix}/share/doc/
 latexdir=$(texmf_prefix)/tex/latex/$(PKGNAME)
 
 VERSION=$(shell cat VERSION)
@@ -31,6 +31,7 @@ install::
 	$(INSTALL) -m 755 $(sharefiles) ${datarootdir}/$(PKGNAME)
 	mkdir -p $(latexdir)
 	$(INSTALL) -m 644 $(texfiles) $(latexdir)
+	mkdir -p ${mandir}
 	$(INSTALL) README $(mandir)/$(PKGNAME)/
 	texhash
 
