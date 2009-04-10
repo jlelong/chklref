@@ -15,13 +15,16 @@
 \newwrite\chk@write
 \immediate\openout\chk@write\jobname.tex.chk%
 \def\chk@print#1{%
-  \immediate\write\chk@write{#1}%
+  \begingroup
+    \set@display@protect
+    \immediate\write\chk@write{#1}%
+  \endgroup
 }
 
 \let\include@orig=\include
 \def\include#1{%
   \push{\currentfile}%
-  \gdef\currentfile{#1.tex}%
+  \xdef\currentfile{#1.tex}%
   \include@orig{#1}%
   \pop\@temp%
   \xdef\currentfile{\@temp}%
@@ -44,7 +47,7 @@
 }
 \def\@chk@@input#1 { %
   \push{\currentfile}%
-  \gdef\currentfile{#1}%
+  \xdef\currentfile{#1}%
   \input@orig #1%
    \pop\@temp%
   \xdef\currentfile{\@temp}%
