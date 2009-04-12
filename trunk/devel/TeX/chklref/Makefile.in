@@ -33,7 +33,6 @@ install::
 	$(INSTALL) -m 644 $(texfiles) $(latexdir)
 	mkdir -p ${mandir}
 	$(INSTALL) README $(mandir)/$(PKGNAME)/
-	texhash
 
 uninstall::
 	rm -f ${bindir}/chklref

@@ -1,13 +1,21 @@
 Source: chklref
-Section: unknown
-Priority: extra
+Section: tex
+Priority: optional
 Maintainer: Jérôme Lelong <jerome.lelong@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev
+Build-Depends-Indep: texlive-latex-recommended|tetex-bin
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 7), autotools-dev
 Standards-Version: 3.8.1
-Homepage: <insert the upstream URL, if relevant>
+Homepage: http://cermics.enpc.fr/~lelong/prog/chklref/
 
 Package: chklref
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${perl:Depends}
+Description: chklref is a LaTeX package intended to help LaTeX users
+ to find out an y useless references in their tex files or any numbered
+ environments that should not be.
+
+ A LaTeX package chklref.sty redefines \label and \ref commands to
+ write some relevant information concerning the references to file
+ named \jobname.tex.chk. Then, this temporary file is parsed by a Perl
+ program to determine the useless labels.
+
