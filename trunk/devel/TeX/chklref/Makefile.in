@@ -53,3 +53,5 @@ dist::
 clean::
 	$(RM) chklref 
 	(cd man; make clean)
+
+distclean:: clean

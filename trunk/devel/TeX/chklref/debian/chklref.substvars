@@ -1,1 +1,2 @@
-misc:Depends=
+misc:Depends=dpkg (>= 1.14.18), tex-common (>= 1.12)
+perl:Depends=perl

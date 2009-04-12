@@ -45,3 +45,5 @@ uninstall:
 
 clean:
 	\rm -f manual.dvi manual.log manual.aux manual.out manual.pdf
+
+distclean:: clean
