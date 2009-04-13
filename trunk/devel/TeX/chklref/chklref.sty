@@ -5,12 +5,13 @@
 \RequirePackage{afterpackage}
 %%[2008/04/12\space v2.0]
 
-\xdef\currentfile{\jobname.tex}
+\xdef\@chk@currentfile{\jobname.tex}
 \xdef\old@filename{\jobname.tex}
 
 \def\push#1{\xdef\old@filename{{#1}\old@filename}} 
 \def\pop{\expandafter\popit\old@filename\theend}
-\def\popit#1#2\theend#3{\def#3{#1}\gdef\old@filename{#2}} 
+\def\popit#1#2\theend#3{\def#3{#1}%
+  \xdef\old@filename{#2}} 
 
 \newwrite\chk@write
 \immediate\openout\chk@write\jobname.tex.chk%
@@ -21,71 +22,55 @@
   \endgroup
 }
 
-\let\include@orig=\include
-\def\include#1{%
-  \push{\currentfile}%
-  \xdef\currentfile{#1.tex}%
-  \include@orig{#1}%
-  \pop\@temp%
-  \xdef\currentfile{\@temp}%
-}
+\long\def \InputIfFileExists#1#2{%
+  \IfFileExists{#1}{#2\@addtofilelist{#1}%
+    \push{\@chk@currentfile}%
+    \xdef\@chk@currentfile{#1}%
+    \@@input \@filef@und%
+    \pop\@temp%
+    \xdef\@chk@currentfile{\@temp}}}
 
+\def\@input#1{%
+  \IfFileExists{#1}{%
+    \push{\@chk@currentfile}%
+    \xdef\@chk@currentfile{#1}%
+    \@@input\@filef@und%
+    \pop\@temp%
+    \xdef\@chk@currentfile{\@temp}}
+  {\typeout{No file #1.}}}
+  
+
+%% Don't want to redefine \input toto while in preamble because it breaks
+%% loading babel.
 \AtBeginDocument{%
-\let\input@orig\input
-\def\input{\@ifnextchar\bgroup\@chk@iinput\@chk@@input}
-\def\@chk@iinput#1{%
-  \push{\currentfile}
-  \xdef\currentfile{#1}
-  \InputIfFileExists{#1}{}%
-  {\filename@parse{#1}%
-    \edef\reserved@a{\noexpand\@missingfileerror
-      {\filename@area\filename@base}%
-      {\ifx\filename@ext\relax tex\else\filename@ext\fi}}%
-    \reserved@a}%
+\def\input{\@ifnextchar\bgroup\@iinput\@@chk@input}
+\def\@@chk@input#1 {%
+  \push{\@chk@currentfile}%
+  \xdef\@chk@currentfile{#1}%
+  \@@input #1%
   \pop\@temp%
-  \xdef\currentfile{\@temp}%
-}
-\def\@chk@@input#1 { %
-  \push{\currentfile}%
-  \xdef\currentfile{#1}%
-  \input@orig #1%
-   \pop\@temp%
-  \xdef\currentfile{\@temp}%
+  \xdef\@chk@currentfile{\@temp}
 }}
 
 
 \let\begin@orig=\begin
 \def\begin#1{%
-    \chk@print{begin{#1} line \the\inputlineno\space file \currentfile}%
+    \chk@print{begin{#1} line \the\inputlineno\space file \@chk@currentfile}%
     \begin@orig{#1}%
 }
 
 \let\end@orig=\end
 \def\end#1{%
-   \chk@print{end{#1} line \the\inputlineno\space file \currentfile}%
+   \chk@print{end{#1} line \the\inputlineno\space file \@chk@currentfile}%
    \end@orig{#1}%
 }
-
-%% \AfterPackage{hyperref}{
-%%   \AtBeginDocument{%
-%%     \let\label@orig=\label
-%%     \def\label#1{%
-%%       \label@orig{#1}%
-%%       \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
-    
-%%     \let\ref@orig=\ref
-%%     \def\ref#1{%
-%%       \ref@orig{#1}%
-%%       \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
-%%   }
-%% }
 
 \AfterPackage{hyperref}{
   \AtBeginDocument{%
     \let\label@orig=\label
     \def\label#1{%
       \label@orig{#1}%
-      \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+      \chk@print{label #1 line \the\inputlineno\space file \@chk@currentfile}}
 
     \Hy@SetCatcodes
     \def\HyPsd@ref#1{\HyPsd@@ref#1*\END}%
@@ -102,7 +87,7 @@
       \else
         \expandafter\expandafter\expandafter\@car\csname r@#1\endcsname\@nil
       \fi
-      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}%
+      \chk@print{ref #1 line \the\inputlineno\space file \@chk@currentfile}%
     }
     \let\ref=\HyPsd@ref
     \Hy@RestoreCatcodes
@@ -113,23 +98,23 @@
   \@ifpackageloaded{amsmath}{% With AMS-LaTeX tags
     \let\label@in@display@orig=\label@in@display
     \def\label@in@display#1{%
-      \chk@print{label #1 line \the\inputlineno\space file \currentfile}
+      \chk@print{label #1 line \the\inputlineno\space file \@chk@currentfile}
       \label@in@display@orig{#1}}
     
     \let\ref@orig=\ref
     \def\ref#1{%
       \ref@orig{#1}%
-      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+      \chk@print{ref #1 line \the\inputlineno\space file \@chk@currentfile}}
 
     \let\eqref@orig=\eqref
     \def\eqref#1{%
-      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}
+      \chk@print{ref #1 line \the\inputlineno\space file \@chk@currentfile}
       \eqref@orig{#1}}
 
     \let\label@orig=\label
     \def\label#1{%
       \label@orig{#1}%
-      \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+      \chk@print{label #1 line \the\inputlineno\space file \@chk@currentfile}}
   }}
 
 \AtBeginDocument{%
@@ -137,12 +122,12 @@
     \let\label@orig=\label
     \def\label#1{%
       \label@orig{#1}%
-      \chk@print{label #1 line \the\inputlineno\space file \currentfile}}
+      \chk@print{label #1 line \the\inputlineno\space file \@chk@currentfile}}
     
     \let\ref@orig=\ref
     \def\ref#1{%
       \ref@orig{#1}%
-      \chk@print{ref #1 line \the\inputlineno\space file \currentfile}}
+      \chk@print{ref #1 line \the\inputlineno\space file \@chk@currentfile}}
   }
 }
 \endinput
