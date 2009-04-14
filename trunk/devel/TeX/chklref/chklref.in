@@ -29,11 +29,11 @@ PDFLATEX=@pdflatex_path@
 
 print_usage()
 {
-    echo  "usage: chklref [-d] [-q] [-p] file[.tex]";
-    echo  "\t-p : use pdflatex instead of latex";
-    echo  "\t-q : latex runs silently";
-    echo  "\t-d : debugging mode";
-    echo  "\t-h : displays this help";
+    echo  -e "usage: chklref [-d] [-q] [-p] file[.tex]";
+    echo -e "\t-p : use pdflatex instead of latex";
+    echo -e "\t-q : latex runs silently";
+    echo -e "\t-d : debugging mode";
+    echo -e "\t-h : displays this help";
 
 }
 
@@ -58,7 +58,7 @@ fi
 
 
 basetexfile=$(basename $1 .tex)
-echo "Running $latex_cmd on $bastexfile.tex to collect labels,"
+echo "Running $latex_cmd on $basetexfile.tex to collect labels,"
 echo "references and environment declarations"
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
