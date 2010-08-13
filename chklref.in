@@ -29,11 +29,11 @@ PDFLATEX=@pdflatex_path@
 
 print_usage()
 {
-    echo  -e "usage: chklref [-d] [-q] [-p] file[.tex]";
-    echo -e "\t-p : use pdflatex instead of latex";
-    echo -e "\t-q : latex runs silently";
-    echo -e "\t-d : debugging mode";
-    echo -e "\t-h : displays this help";
+    printf "usage: chklref [-d] [-q] [-p] file[.tex]\n";
+    printf "\t-p : use pdflatex instead of latex\n";
+    printf "\t-q : latex runs silently\n";
+    printf "\t-d : debugging mode\n";
+    printf "\t-h : displays this help\n";
 
 }
 
@@ -47,7 +47,7 @@ do
         h) print_usage; exit 0;;
         q) out='/dev/null';;
         d) debug=1;;
-        *) echo "illegal option"; print_usage; exit 0;;
+        *) printf "illegal option\n"; print_usage; exit 0;;
     esac
 done
 shift $(($OPTIND - 1))
@@ -58,11 +58,11 @@ fi
 
 
 basetexfile=$(basename $1 .tex)
-echo "Running $latex_cmd on $basetexfile.tex to collect labels,"
-echo "references and environment declarations"
+printf "Running $latex_cmd on $basetexfile.tex to collect labels,
+references and environment declarations\n"
 $latex_cmd --interaction errorstopmode "${basetexfile}" > "$out" 2>&1
-rm -- "$basetexfile".tex.chk
+rm -f -- "$basetexfile".tex.chk
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
 $PERL "$prefix"/share/chklref/chkparser "$basetexfile".tex.chk
-[ $debug -ne 0 ] || rm -- "$basetexfile".tex.chk
+[ $debug -ne 0 ] || rm -f -- "$basetexfile".tex.chk
