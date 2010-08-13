@@ -77,7 +77,7 @@ sub new_math_env
 ## last 3 args are passed by reference and are modified
 sub chk_parse
 {
-    my ($txt, $entries, $refs, $labels) = @_;
+    my ($txt, $entries, $refs, $labels, $citations, $bibcites) = @_;
     my ($str, $begin, $end, $star, $labeled_env, $label, $file, $entry, $l);
 
 #     ## swap end and label commands in an array
@@ -105,7 +105,15 @@ sub chk_parse
         {
             push(@$refs, new_ref($1, $2, $3));
         }
-        elsif ($l =~ m/^begin{$have_star_mode(\**)} line (\d+) file (.+)$/o)
+        elsif ($l =~ m/^citation (.+) line (\d+) file (.+)$/o)
+        {
+            foreach my $c (split(/\s*,\s*/, $1))
+            { ${$citations}{$c}=1 }
+        }
+        elsif ($l =~ m/^bibcite (.+) line (\d+) file (.+)$/o)
+        {
+            push(@$bibcites, $1);
+        }        elsif ($l =~ m/^begin{$have_star_mode(\**)} line (\d+) file (.+)$/o)
         {
             $str         = $1;
             $star        = 1;
@@ -193,6 +201,18 @@ sub unused_label
     print "\n";
 }
 
+sub unused_cites 
+{
+    my ($bibcites, $citations) = @_;
+    print "****************************
+** Uncited Bibliographies **
+****************************\n";
+    foreach my $c (@$bibcites)
+    {
+        print("Unused bibliography entry: $c\n") unless exists ${$citations}{$c};
+    }
+}
+
 ## find and remove duplicates in an
 ## array of { str, line } entries.
 ## Note that the array must be sorted according to str
@@ -237,6 +257,8 @@ if (@ARGV != 1)
 my @entries = ();
 my @refs    = ();
 my @labels  = ();
+my %citations = ();
+my @bibcites  = ();
 my $FIC;
 
 ## reads whole file to an array because label and end commands
@@ -245,7 +267,7 @@ open($FIC, '<', $ARGV[0]) or die("open: $!");
 my @txt = <$FIC>;
 close($FIC);
 
-chk_parse(\@txt, \@entries, \@refs, \@labels);
+chk_parse(\@txt, \@entries, \@refs, \@labels, \%citations, \@bibcites);
 
 @labels = sort { $a->{line} cmp $b->{line} } @labels;
 @refs   = sort { $a->{str} cmp $b->{str} } @refs;
@@ -253,3 +275,4 @@ my $uniq_refs = rm_duplicate(\@refs);
 star_label(\@entries);
 ##disp_msg( \@entries );
 unused_label(\@labels, $uniq_refs);
+unused_cites(\@bibcites, \%citations);

@@ -60,7 +60,9 @@ fi
 basetexfile=$(basename $1 .tex)
 echo "Running $latex_cmd on $basetexfile.tex to collect labels,"
 echo "references and environment declarations"
+$latex_cmd --interaction errorstopmode "${basetexfile}" > "$out" 2>&1
+rm -- "$basetexfile".tex.chk
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
-$PERL $prefix/share/chklref/chkparser $basetexfile.tex.chk
-if (( ! $debug )) ; then rm $basetexfile.tex.chk; fi
+$PERL "$prefix"/share/chklref/chkparser "$basetexfile".tex.chk
+[ $debug -ne 0 ] || rm -- "$basetexfile".tex.chk
