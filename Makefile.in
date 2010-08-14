@@ -4,54 +4,64 @@
 # January 2008.
 #
 
-INSTALL = @INSTALL@
-PKGNAME = @PKGNAME@
-TEXMFLOCAL = @TEXMFLOCAL@
-prefix = @prefix@
-bindir = ${prefix}/bin
-datarootdir = ${prefix}/share/
-binfiles = @binfiles@
-distfiles = @distfiles@
-sharefiles = @sharefiles@
-texfiles = @texfiles@
-texmf_prefix = $(prefix)/share/texmf
-mandir = ${prefix}/share/doc/
-latexdir=$(texmf_prefix)/tex/latex/$(PKGNAME)
+INSTALL=@INSTALL@
+PKGNAME=@PKGNAME@
+prefix=@prefix@
+bindir=@bindir@
+LATEXDIR=@LATEXDIR@
+DOCDIR=@DOCDIR@
+SCRIPTSDIR=@SCRIPTSDIR@
+
+
+DISTFILES=configure configure.in chklref.sty chklref.in chkparser README \
+	Makefile.in man/chklref.tex man/Makefile.in VERSION
+SCRIPTS=chkparser
+BINFILES=chklref
+TEXFILES=chklref.sty
+DOCFILES=man/chklref.pdf README
 
 VERSION=$(shell cat VERSION)
 
 all::
 	(cd man; make all)
 
-install::
-	(cd man; make install )
-	mkdir -p ${bindir}
-	$(INSTALL) -m 755 $(binfiles) $(bindir)
-	mkdir -p ${datarootdir}/$(PKGNAME)
-	$(INSTALL) -m 755 $(sharefiles) ${datarootdir}/$(PKGNAME)
-	mkdir -p $(latexdir)
-	$(INSTALL) -m 644 $(texfiles) $(latexdir)
-	mkdir -p ${mandir}
-	$(INSTALL) README $(mandir)/$(PKGNAME)/
+install:: all
+	$(INSTALL) -d $(bindir)
+	$(INSTALL) -m 755 $(BINFILES) $(bindir)
+	$(INSTALL) -d $(SCRIPTSDIR)
+	$(INSTALL) -m 755 $(SCRIPTS) $(SCRIPTSDIR)
+	$(INSTALL) -d $(LATEXDIR)
+	$(INSTALL) -m 644 $(TEXFILES) $(LATEXDIR)
+	$(INSTALL) -d $(DOCDIR)
+	$(INSTALL) -m 644 $(DOCFILES) $(DOCDIR)
+
+
+define chk_rm
+@for f in $(2); do echo $(1)/$$f; done
+endef
 
 uninstall::
-	rm -f ${bindir}/chklref
-	(cd man; make uninstall)
+	$(call chk_rm, $(bindir), $(BINFILES))
+	$(call chk_rm, $(DOCDIR), $(DOCFILES))
+	$(call chk_rm, $(LATEXDIR), $(TEXFILES))
+	$(call chk_rm, $(SCRIPTSDIR), $(SCRIPTS))
 
 
 dist::
-	rm -rf chklref-${VERSION}
-	mkdir -p chklref-${VERSION}
-	(cd chklref-${VERSION}; \
-	cvs export -D 'today' TeX/chklref ;\
+	rm -rf chklref-$(VERSION)
+	mkdir -p chklref-$(VERSION)
+	(cd chklref-$(VERSION); \
+	svn export 'today' TeX/chklref ;\
 	mv TeX/chklref/* . ;\
 	$(RM) -r TeX/chklref ;\
 	$(RM) -r TeX )
-	tar cf - chklref-${VERSION} | gzip > chklref-${VERSION}.tar.gz
-	rm -rf chklref-${VERSION}
+	tar cf - chklref-$(VERSION) | gzip > chklref-$(VERSION).tar.gz
+	rm -rf chklref-$(VERSION)
 
 clean::
 	$(RM) chklref 
 	(cd man; make clean)
 
 distclean:: clean
+	(cd man; make distclean)
+

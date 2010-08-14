@@ -1,25 +1,33 @@
-AC_INIT(chklref,2.1, jerome.lelong@gmail.com)
+AC_INIT(chklref,2.5, jerome.lelong@gmail.com)
 
 PKGNAME=chklref
 AC_PROG_INSTALL
+
+AC_ARG_WITH(texmf-prefix,
+        [  --with-texmf-prefix   prefix to use for texmf. By default, prefix/share/texmf is used],
+        [with_texmf_prefix=$withval])
 
 if test "x$prefix" = "xNONE" ; then
    prefix=/usr/local
 fi
 
-installdir=${prefix}
-distfiles="configure configure.in chklref.sty chklref.in chkparser README \
-Makefile.in man/manual.tex man/Makefile.in VERSION"
-sharefiles="chkparser"
-binfiles="chklref"
-texfiles="chklref.sty"
+if test "$with_texmf_prefix" != "no" ; then
+   texmf_prefix=$with_texmf_prefix
+else
+   texmf_prefix=$prefix/share/texmf
+fi
+
+bindir=$prefix/bin
+LATEXDIR=$texmf_prefix/tex/latex/$PKGNAME
+DOCDIR=$texmf_prefix/doc/latex/$PKGNAME
+SCRIPTSDIR=$texmf_prefix/scripts/$PKGNAME
 
 AC_SUBST(PKGNAME)
 AC_SUBST(prefix)
-AC_SUBST(distfiles)
-AC_SUBST(binfiles)
-AC_SUBST(sharefiles)
-AC_SUBST(texfiles)
+AC_SUBST(bindir)
+AC_SUBST(LATEXDIR)
+AC_SUBST(DOCDIR)
+AC_SUBST(SCRIPTSDIR)
 
 AC_PATH_PROG(latex_path, latex)
 if test "x$latex_path" = "x" ; then    
@@ -33,25 +41,9 @@ AC_PATH_PROG(perl_path, perl)
 if test "x$perl_path" = "x" ; then    
    AC_MSG_ERROR("perl not found")
 fi
-AC_PATH_PROG(gs_path, gs)
-if test "x$gs_path" = "x" ; then    
-   AC_MSG_ERROR("ghostscript interpreter not found")
-fi
-AC_PATH_PROG(dvips_path, dvips)
-if test "x$gs_path" = "x" ; then    
-   AC_MSG_ERROR("dvips not found")
-fi
 
 AC_SUBST(latex_path)
 AC_SUBST(pdflatex_path)
 AC_SUBST(perl_path)
-AC_SUBST(gs_path)
-AC_SUBST(dvips_path)
-
-
-texmf_cnf=$(kpsewhich texmf.cnf);
-TEXMFLOCAL=$(grep -e 'TEXMFLOCAL[ ]*=[ ]*' $texmf_cnf | sed 's/TEXMFLOCAL[ ]*=[ ]*//' | tail -n 1)
-AC_SUBST(TEXMFLOCAL)
-
 
 AC_OUTPUT(Makefile chklref man/Makefile)

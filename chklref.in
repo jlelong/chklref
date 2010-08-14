@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 ##
 ## wrapper for chklref program
@@ -23,6 +23,9 @@
 #########################################################################
 
 prefix=@prefix@
+bindir=@bindir@
+SCRIPTSDIR=@SCRIPTSDIR@
+
 PERL=@perl_path@
 LATEX=@latex_path@
 PDFLATEX=@pdflatex_path@
@@ -72,7 +75,7 @@ $latex_cmd --interaction errorstopmode "${basetexfile}" > "$out" 2>&1
 rm -f -- "$basetexfile".tex.chk
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" &> $out
-$PERL "$prefix"/share/chklref/chkparser "$basetexfile".tex.chk
+$PERL "$SCRIPTSDIR"/chkparser "$basetexfile".tex.chk
 [ $debug -ne 0 ] || rm -f -- "$basetexfile".tex.chk
 
 cd ${cwd}

@@ -6,44 +6,17 @@
 # January 2008.
 #
 
-INSTALL = @INSTALL@
-PKGNAME = @PKGNAME@
-TEXMFLOCAL = @TEXMFLOCAL@
-prefix = @prefix@
-bindir = ${prefix}/bin
-datarootdir = ${prefix}/share
-binfiles = @binfiles@
-distfiles = @distfiles@
-sharefiles = @sharefiles@
-texfiles = @texfiles@
-mandir = ${prefix}/share/doc
-LATEX = @latex_path@
-DVIPS = @dvips_path@
-GS = @gs_path@
+PDFLATEX = @pdflatex_path@
 
-all: manual.pdf
+all: chklref.pdf
 
-manual.dvi: manual.tex
-	$(LATEX) $<
-	$(LATEX) $<
-
-manual.ps : manual.dvi
-	$(DVIPS) $< -o $@
-
-manual.pdf: manual.dvi
-	$(DVIPS) -q -f $< | $(GS) -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$@ -
-
-install:
-	mkdir -p $(mandir)/$(PKGNAME)
-	$(INSTALL) manual.pdf $(mandir)/$(PKGNAME)/chklref.pdf
-
-uninstall:
-	$(RM) $(mandir)/$(PKGNAME)/chklref.pdf
-	$(RM) $(mandir)/$(PKGNAME)/README
-	rmdir $(mandir)/$(PKGNAME)
+chklref.pdf: chklref.tex
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
 
 
 clean:
-	\rm -f manual.dvi manual.log manual.aux manual.out manual.pdf
+	\rm -f chklref.dvi chklref.log chklref.aux chklref.out 
 
 distclean:: clean
+	\rm -f chklref.pdf
