@@ -26,8 +26,10 @@ The following default values are used
 These default values can be changed by the flags --prefix
 and --with-texmf-prefix passed to the configure script.
 
-Do not forget to run "sudo texhash" to update your Tex Directory Structure.
+Note:
+----
 
+Do not forget to run "sudo texhash" to update your Tex Directory Structure.
 
 Notes for installation under MacOS X:
 ------------------------------------
@@ -45,18 +47,26 @@ II. Installation on a single account
 
 This installation does not require any particular privileges.
 
-We assume that the directory $HOME/bin is in your PATH, if not please
-update your PATH. You can install the software on your account using
+We assume that the directory $HOME/bin is in your PATH, if not you have to add it
+your PATH. You can install the software on your account using
 
-    ./configure --prefix=$HOME/bin --with-texmf-prefix=$HOME/texmf
+    ./configure --prefix=$HOME --with-texmf-prefix=$HOME/texmf
+    make
+    make install
+
+Note:
+----
+
+For the installation on a single account, you do not need to run texhash
 
 
 Notes for installation under MacOS X:
 ------------------------------------
 
-The directory $HOME/texmf may not exist because it is replaced by $HOME/Library/texmf instead. So either you use 
+The directory $HOME/texmf may not exist because it is replaced by
+$HOME/Library/texmf instead. So either you use
 
-    ./configure --prefix=$HOME/bin --with-texmf-prefix=$HOME/Library/texmf
+    ./configure --prefix=$HOME --with-texmf-prefix=$HOME/Library/texmf
 
 or you create a symbolic link
 

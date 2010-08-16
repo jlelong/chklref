@@ -1914,7 +1914,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile chklref man/Makefile"
+ac_config_files="$ac_config_files Makefile chklref"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2486,7 +2486,6 @@ do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "chklref") CONFIG_FILES="$CONFIG_FILES chklref" ;;
-    "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

@@ -46,4 +46,4 @@ AC_SUBST(latex_path)
 AC_SUBST(pdflatex_path)
 AC_SUBST(perl_path)
 
-AC_OUTPUT(Makefile chklref man/Makefile)
+AC_OUTPUT(Makefile chklref)

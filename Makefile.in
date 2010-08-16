@@ -1,10 +1,13 @@
 #
 # Jérôme Lelong <jerome.lelong@gmail.com>
 # 
-# January 2008.
+# 2008-2010.
 #
 
 INSTALL=@INSTALL@
+PDFLATEX=@pdflatex_path@
+LATEX=@latex_path@
+
 PKGNAME=@PKGNAME@
 prefix=@prefix@
 bindir=@bindir@
@@ -14,54 +17,56 @@ SCRIPTSDIR=@SCRIPTSDIR@
 
 
 DISTFILES=configure configure.in chklref.sty chklref.in chkparser README \
-	Makefile.in man/chklref.tex man/Makefile.in VERSION
+	Makefile.in chklref.tex VERSION
 SCRIPTS=chkparser
 BINFILES=chklref
 TEXFILES=chklref.sty
-DOCFILES=man/chklref.pdf README
+DOCFILES=chklref.pdf README
 
 VERSION=$(shell cat VERSION)
 
-all::
-	(cd man; make all)
+all:: chklref.pdf clean
+
+chklref.pdf: chklref.tex
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
+
 
 install:: all
-	$(INSTALL) -d $(bindir)
-	$(INSTALL) -m 755 $(BINFILES) $(bindir)
-	$(INSTALL) -d $(SCRIPTSDIR)
-	$(INSTALL) -m 755 $(SCRIPTS) $(SCRIPTSDIR)
-	$(INSTALL) -d $(LATEXDIR)
-	$(INSTALL) -m 644 $(TEXFILES) $(LATEXDIR)
-	$(INSTALL) -d $(DOCDIR)
-	$(INSTALL) -m 644 $(DOCFILES) $(DOCDIR)
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 $(BINFILES) $(DESTDIR)$(bindir)
+	$(INSTALL) -d $(DESTDIR)$(SCRIPTSDIR)
+	$(INSTALL) -m 755 $(SCRIPTS) $(DESTDIR)$(SCRIPTSDIR)
+	$(INSTALL) -d $(DESTDIR)$(LATEXDIR)
+	$(INSTALL) -m 644 $(TEXFILES) $(DESTDIR)$(LATEXDIR)
+	$(INSTALL) -d $(DESTDIR)$(DOCDIR)
+	$(INSTALL) -m 644 $(DOCFILES) $(DESTDIR)$(DOCDIR)
 
 
 define chk_rm
-@for f in $(2); do echo $(1)/$$f; done
+for f in $(2); do echo "uninstalling $(1)/$$f"; $(RM) $(1)/$$f; done
 endef
 
 uninstall::
-	$(call chk_rm, $(bindir), $(BINFILES))
-	$(call chk_rm, $(DOCDIR), $(DOCFILES))
-	$(call chk_rm, $(LATEXDIR), $(TEXFILES))
-	$(call chk_rm, $(SCRIPTSDIR), $(SCRIPTS))
+	$(call chk_rm, $(bindir), $(DESTDIR)$(BINFILES))
+	$(call chk_rm, $(DOCDIR), $(DESTDIR)$(DOCFILES))
+	$(call chk_rm, $(LATEXDIR), $(DESTDIR)$(TEXFILES))
+	$(call chk_rm, $(SCRIPTSDIR), $(DESTDIR)$(SCRIPTS))
 
 
 dist::
 	rm -rf chklref-$(VERSION)
 	mkdir -p chklref-$(VERSION)
 	(cd chklref-$(VERSION); \
-	svn export 'today' TeX/chklref ;\
-	mv TeX/chklref/* . ;\
-	$(RM) -r TeX/chklref ;\
-	$(RM) -r TeX )
+	svn export svn+ssh://noe/kora/home/mathfi/lelong/svnroot/devel/chklref; \
+	mv chklref/* .; \
+	rmdir chklref; )
 	tar cf - chklref-$(VERSION) | gzip > chklref-$(VERSION).tar.gz
 	rm -rf chklref-$(VERSION)
 
 clean::
-	$(RM) chklref 
-	(cd man; make clean)
+	$(RM) chklref.dvi chklref.log chklref.aux chklref.out 
 
 distclean:: clean
-	(cd man; make distclean)
+	$(RM) chklref
 
