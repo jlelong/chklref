@@ -5,15 +5,7 @@
 
 1. Installation
 
-  Simply run 
-	./configure
-	make
-	sudo make install
-    sud texhash
-
-  By default, the installation uses /usr/local as prefix. This
-  behaviour can be changed by passing the --prefix=/new/prefix option
-  to the configure command.
+See the INSTALL file
 
 2. Execution
 

@@ -1,0 +1,68 @@
+                ** INSTALLATION of CHKLREF **
+
+
+I. System wide installation
+***************************
+
+You need the root privileges to perform this installation
+
+Simply run 
+
+  ./configure
+  make
+  sudo make install
+
+This package follows the TDS[1] and installs :
+    * the main program in $(prefix)
+    * TeX files in $(texmf_prefix)/tex/latex/chklref (for the main
+      chklref.sty file), $(texmf_prefix)/doc/latex/chklref (for the
+      manual chklref.pdf), $(texmf_prefix)/scripts/chklref for (the Perl
+      parser chkparser).
+
+The following default values are used
+    * prefix=/usr/local
+    * texmf_prefix=$(prefix)/share/texmf
+
+These default values can be changed by the flags --prefix
+and --with-texmf-prefix passed to the configure script.
+
+Do not forget to run "sudo texhash" to update your Tex Directory Structure.
+
+
+Notes for installation under MacOS X:
+------------------------------------
+
+Under MacOS X, your tex distribution is probably not installed under
+/usr/share/texmf nor /usr/local/share/texmf. You are most likely using
+the TeXlive distribution provided by MacTeX which installs under
+/usr/local/texlive. Hence, you should invoke configure with
+
+    --with-texmf-prefix=/usr/local/texlive/texmf-local
+
+
+II. Installation on a single account
+************************************
+
+This installation does not require any particular privileges.
+
+We assume that the directory $HOME/bin is in your PATH, if not please
+update your PATH. You can install the software on your account using
+
+    ./configure --prefix=$HOME/bin --with-texmf-prefix=$HOME/texmf
+
+
+Notes for installation under MacOS X:
+------------------------------------
+
+The directory $HOME/texmf may not exist because it is replaced by $HOME/Library/texmf instead. So either you use 
+
+    ./configure --prefix=$HOME/bin --with-texmf-prefix=$HOME/Library/texmf
+
+or you create a symbolic link
+
+    ln -s $HOME/Library/texmf $HOME/texmf
+
+    
+[1] : TeX Directory Structure http://www.tug.org/twg/tds/
+
+
