@@ -4,6 +4,8 @@
 # 2008-2010.
 #
 
+.PHONY: all clean distclean install uninstall
+
 INSTALL=@INSTALL@
 PDFLATEX=@pdflatex_path@
 LATEX=@latex_path@
