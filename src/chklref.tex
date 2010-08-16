@@ -31,7 +31,7 @@
 
 \title{Check \LaTeX\ references : chklref \\
 Version 2.5}
-\date{\today}
+\date{Monday 16 August 2010}
 \author{J\'er\^ome Lelong}
   
 
@@ -78,7 +78,7 @@ Figure~\ref{fig:output}): one about labels in starred environments and one about
 unneeded labels. Each of these output lines begins with a line number referring
 to the parsed \TeX\ file. Then, the action to be undertaken is printed :
 ``remove label'' or ``use a starred environment''. In the case of a ``remove
-label'' message, the label to removed is also printed to avoid any possible
+label'' message, the label to be removed is also printed to avoid any possible
 confusions.
 
 \begin{figure}[htbp]
@@ -98,6 +98,16 @@ line  313 : remove label eq:prog_dyn_prix
   \caption{Program output}
   \label{fig:output}
 \end{figure}
+
+Since version 2.5, bibliography entries are also scanned to check if some
+entries are not explicitly cited in the text. In this case, a ``remove
+bibitem'' message is printed.
+\begin{verbatim}
+****************************
+** Uncited Bibliographies **
+****************************
+remove bibitem : premia
+\end{verbatim}
 
 
 \section{Usage}
@@ -119,10 +129,11 @@ The source code is available from
 \url{http://www-ljk.imag.fr/membres/Jerome.Lelong/soft/chklref/index.html}.
 \\
 
-\noindent It is distributed under the GPL license version 3 or above in the
-hope it will be usefull but without any warrany. In the case you find a bug in
-the code, could you send me a mail to \verb!jerome.lelong@gmail.com! describing
-the problem with a minimal \TeX\ file to reproduce the problem.
+\noindent It is distributed under the GPL license version 3 or any later
+version in the hope it will be usefull but without any warrany. In the case
+you find a bug in the code, could you send me a mail to
+\verb!jerome.lelong@gmail.com! describing the problem with a minimal \TeX\
+file to reproduce the problem.
 
 \endpage
 \end{document}

@@ -204,12 +204,12 @@ sub unused_label
 sub unused_cites 
 {
     my ($bibcites, $citations) = @_;
-    print "****************************
-** Uncited Bibliographies **
-****************************\n";
+    print "**********************************
+** Uncited Bibliography entries **
+**********************************\n";
     foreach my $c (@$bibcites)
     {
-        print("Unused bibliography entry: $c\n") unless exists ${$citations}{$c};
+        print("remove bibitem : $c\n") unless exists ${$citations}{$c};
     }
 }
 
