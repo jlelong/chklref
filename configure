@@ -1756,7 +1756,8 @@ if test "x$prefix" = "xNONE" ; then
    prefix=/usr/local
 fi
 
-if test "$with_texmf_prefix" != "no" ; then
+echo  "$with_texmf_prefix"
+if test "x$with_texmf_prefix" != "x" ; then
    texmf_prefix=$with_texmf_prefix
 else
    texmf_prefix=$prefix/share/texmf
