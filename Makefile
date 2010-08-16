@@ -18,11 +18,12 @@ distclean:
 VERSION=$(shell cat VERSION)
 
 dist:
-	rm -rf chklref-$(VERSION)
+	$(RM) -r chklref-$(VERSION)
+	$(RM)  chklref-$(VERSION).tar.gz
 	mkdir -p chklref-$(VERSION)
 	(cd chklref-$(VERSION); \
 	svn export svn+ssh://noe/kora/home/mathfi/lelong/svnroot/devel/chklref; \
 	mv chklref/* .; \
 	rmdir chklref; )
 	tar cf - chklref-$(VERSION) | gzip > chklref-$(VERSION).tar.gz
-	rm -rf chklref-$(VERSION)
+	$(RM) -r chklref-$(VERSION)
