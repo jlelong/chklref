@@ -15,24 +15,15 @@ LATEXDIR=@LATEXDIR@
 DOCDIR=@DOCDIR@
 SCRIPTSDIR=@SCRIPTSDIR@
 
-
-DISTFILES=configure configure.in chklref.sty chklref.in chkparser README \
-	Makefile.in chklref.tex VERSION
 SCRIPTS=chkparser
 BINFILES=chklref
 TEXFILES=chklref.sty
-DOCFILES=chklref.pdf README
-
-VERSION=$(shell cat VERSION)
-
-all:: chklref.pdf clean
-
-chklref.pdf: chklref.tex
-	$(PDFLATEX) $<
-	$(PDFLATEX) $<
+DOCFILES=chklref.pdf
 
 
-install:: all
+all: chklref.pdf clean
+
+install: all
 	$(INSTALL) -d $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(BINFILES) $(DESTDIR)$(bindir)
 	$(INSTALL) -d $(DESTDIR)$(SCRIPTSDIR)
@@ -44,29 +35,23 @@ install:: all
 
 
 define chk_rm
-for f in $(2); do echo "uninstalling $(1)/$$f"; $(RM) $(1)/$$f; done
+@for f in $(2); do echo "uninstalling $(1)/$$f"; $(RM) $(1)/$$f; done
 endef
 
-uninstall::
+uninstall:
 	$(call chk_rm, $(bindir), $(DESTDIR)$(BINFILES))
 	$(call chk_rm, $(DOCDIR), $(DESTDIR)$(DOCFILES))
 	$(call chk_rm, $(LATEXDIR), $(DESTDIR)$(TEXFILES))
 	$(call chk_rm, $(SCRIPTSDIR), $(DESTDIR)$(SCRIPTS))
 
 
-dist::
-	rm -rf chklref-$(VERSION)
-	mkdir -p chklref-$(VERSION)
-	(cd chklref-$(VERSION); \
-	svn export svn+ssh://noe/kora/home/mathfi/lelong/svnroot/devel/chklref; \
-	mv chklref/* .; \
-	rmdir chklref; )
-	tar cf - chklref-$(VERSION) | gzip > chklref-$(VERSION).tar.gz
-	rm -rf chklref-$(VERSION)
+chklref.pdf: chklref.tex
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
 
-clean::
+clean:
 	$(RM) chklref.dvi chklref.log chklref.aux chklref.out 
 
-distclean:: clean
+distclean: clean
 	$(RM) chklref
 
