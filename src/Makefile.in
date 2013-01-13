@@ -26,13 +26,13 @@ DOCFILES=chklref.pdf
 all: chklref.pdf clean
 
 install: all
-	$(INSTALL) -d $(DESTDIR)$(bindir)
+	if ! test -d $(DESTDIR)$(bindir); then $(INSTALL) -d $(DESTDIR)$(bindir); fi
 	$(INSTALL) -m 755 $(BINFILES) $(DESTDIR)$(bindir)
-	$(INSTALL) -d $(DESTDIR)$(SCRIPTSDIR)
+	if ! test -d $(DESTDIR)$(SCRIPTSDIR); then $(INSTALL) -d $(DESTDIR)$(SCRIPTSDIR); fi
 	$(INSTALL) -m 755 $(SCRIPTS) $(DESTDIR)$(SCRIPTSDIR)
-	$(INSTALL) -d $(DESTDIR)$(LATEXDIR)
+	if ! test -d $(DESTDIR)$(LATEXDIR); then $(INSTALL) -d $(DESTDIR)$(LATEXDIR); fi
 	$(INSTALL) -m 644 $(TEXFILES) $(DESTDIR)$(LATEXDIR)
-	$(INSTALL) -d $(DESTDIR)$(DOCDIR)
+	if ! test -d $(DESTDIR)$(DOCDIR); then $(INSTALL) -d $(DESTDIR)$(DOCDIR); fi
 	$(INSTALL) -m 644 $(DOCFILES) $(DESTDIR)$(DOCDIR)
 
 
