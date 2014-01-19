@@ -21,8 +21,8 @@ uninstall:
 
 
 chklref.pdf: chklref.tex
-	$(PDFLATEX) $<
-	$(PDFLATEX) $<
+	$(PDFLATEX) "\def\chkVERSION{$(VERSION)}\input" $<
+	$(PDFLATEX) "\def\chkVERSION{$(VERSION)}\input" $<
 
 clean:
 	$(RM) chklref.dvi chklref.log chklref.aux chklref.out 

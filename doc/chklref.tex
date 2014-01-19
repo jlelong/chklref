@@ -1,9 +1,7 @@
-%% -*- ispell-local-dictionary: "british"; -*-
-
 \documentclass[a4paper,11pt,twoside]{article}
 \usepackage{a4wide}
 \usepackage{latexsym,t1enc,lmodern,url}
-\usepackage{amssymb, amsmath, amsthm}
+\usepackage{amssymb, amsmath}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
 
@@ -18,25 +16,13 @@
 
 \makeatletter
 
-\ifx\HCode\undefined%
-\def\page{}%
-\def\endpage{}%
-\else%
-\def\page{\HCode{<div id='page'>}}%
-\def\endpage{\HCode{</div>}}%
-\fi
-\makeatother
-
-
-
 \title{Check \LaTeX\ references : chklref \\
-Version 2.5}
-\date{Monday 16 August 2010}
+Version \chkVERSION}
+\date{\today}
 \author{J\'er\^ome Lelong}
   
 
 \begin{document}
-\page
 \maketitle
 
 \begin{abstract} Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file
@@ -66,8 +52,8 @@ For instance, consider you a have a \TeX\ file with the following piece of code
 \end{equation}
 \end{verbatim}
 \chk\ will advise you to consider using \verb!equation*! instead of
-\verb!equation! to remove the unneeded and by the way unsable number that would
-otherwise appear next to the equation.
+\verb!equation! in order to remove the unneeded number appearing next to the
+equation.
 
 Starred environments with labels are also tracked because with most \LaTeX\
 distributions it does event raise a warning. However in case you may refer to
@@ -104,7 +90,7 @@ detect if some entries are not explicitly cited in the text. In this case, a
 ``remove bibitem'' message is printed.
 \begin{verbatim}
 **********************************
-** Uncited Bibliography entries **
+** Non cited Bibliography entries **
 **********************************
 remove bibitem : premia
 \end{verbatim}
@@ -125,15 +111,16 @@ standard \textemdash\ it actually only parses the output of the \TeX\ part
 
 \section{Source code}
 
-The source code is available from
-\url{http://www-ljk.imag.fr/membres/Jerome.Lelong/soft/chklref/index.html}.
+The source code is available from GitHub
+\url{https://github.com/jlelong/chklref}.
 \\
 
-\noindent It is distributed under the GPL license version 3 or any later
-version in the hope it will be usefull but without any warrany. In the case
-you find a bug in the code, could you send me a mail to
-\verb!jerome.lelong@gmail.com! describing the problem with a minimal \TeX\
-file to reproduce the problem.
+\noindent It is distributed under the GPL licence version 3 or any later version
+in the hope it will be useful but without any warranty. Should you find a bug in
+chklref, send me a mail to \verb!jerome.lelong@gmail.com! describing the problem
+with a minimal \LaTeX\ file to reproduce the problem or fill in an issue on the
+GitHub repository.
 
-\endpage
 \end{document}
+% vim: set spelllang=en spell:
+
