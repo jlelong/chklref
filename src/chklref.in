@@ -26,44 +26,91 @@ prefix=@prefix@
 bindir=@bindir@
 SCRIPTSDIR=@SCRIPTSDIR@
 
-PERL=@perl_path@
-LATEX=@latex_path@
-PDFLATEX=@pdflatex_path@
+PERL=@PERL_PATH@
+LATEX=@LATEX_PATH@
+PDFLATEX=@PDFLATEX_PATH@
+VERSION=@VERSION@
+LATEXDIR=@LATEXDIR@
+DOCDIR=@DOCDIR@
+SCRIPTSDIR=@SCRIPTSDIR@
 
 print_usage()
 {
-    printf "usage: chklref [-d] [-q] [-p] file[.tex]\n";
-    printf "\t-p : use pdflatex instead of latex\n";
-    printf "\t-q : latex runs silently\n";
-    printf "\t-d : debugging mode\n";
-    printf "\t-h : displays this help\n";
+    cat << EOF
 
+chklref
+
+This is a latex utility to check unused label and bibitem in 
+a LaTeX file.
+
+usage: chklref [OPTIONS] file[.tex]
+
+OPTIONS
+
+    -p,--pdf      : Use pdflatex instead of latex
+    -q,--quiet    : Run LaTeX quietly
+    -d,--debug    : Run in deubgging mode
+    -h,--help     : Display this help
+    --version     : Display the version number
+
+EOF
 }
 
 out='/dev/stdout'
 latex_cmd=$LATEX
 debug=0
-while getopts "pqhd" Option
+while test -n "$1"
 do
-    case $Option in
-        p) latex_cmd=$PDFLATEX;;
-        h) print_usage; exit 0;;
-        q) out='/dev/null';;
-        d) debug=1;;
-        *) printf "illegal option\n"; print_usage; exit 0;;
+    case "$1" in
+        -p|--pdf) 
+            latex_cmd=$PDFLATEX
+            shift
+            ;;
+        -h|--help)
+            print_usage
+            exit 0
+            ;;
+        -q|--quiet) 
+            out='/dev/null'
+            shift
+            ;;
+        -d|--debug) 
+            debug=1
+            shift
+            ;;
+        --version)
+            echo "chklref version $VERSION"
+            exit 0
+            ;;
+        -*) 
+            echo "Unknown option: $1"
+            print_usage
+            exit 1
+            ;;
+        *)
+            break
+            ;;
     esac
 done
-shift `expr $OPTIND - 1`
 
-if [ $# -ne 1 ]; then
-    print_usage; exit 0;
+INFILE=$1
+if test -z "$INFILE"; then
+    echo "$0:   You must specify an input file"
+    exit 1
 fi
 
+if test ! -f "${INFILE}"; then
+    INFILE=${INFILE}.tex
+fi
+if test ! -f "${INFILE}"; then
+    echo "$0:   Neither ${INFILE} nor ${INFILE}.tex exists"
+    exit 1
+fi
 
 # POSIX extractions of dirname and basename
-basetexfile=${1##*/}
+basetexfile=${INFILE##*/}
 basetexfile=${basetexfile%.tex}
-dirtexfile=${1%/*}
+dirtexfile=${INFILE%/*}
 if [ "${dirtexfile}" = "$1" ]; then dirtexfile="."; fi
 
 cd -- "${dirtexfile}"

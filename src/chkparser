@@ -1,9 +1,4 @@
-#!/usr/bin/perl
-
-# * $Author: lelong $
-# * $Revision: 1.2 $
-# * $Source: /users/mathfi/lelong/cvsroot/devel/TeX/chklref/chkparser,v $
-# * $Date: 2008-10-05 10:34:24 $
+#!/usr/bin/env perl
 
 #########################################################################
 # Written and (C) by Jérôme Lelong <jerome.lelong@gmail.com>            #
@@ -28,7 +23,7 @@ my @have_star_modes = qw( equation eqnarray align multline figure table );
 my $have_star_mode = join('|', @have_star_modes);
 $have_star_mode = "($have_star_mode)";
 
-## creates a hash with three keys "str", "line", "file" and returns a
+## Create a hash with three keys "str", "line", "file" and returns a
 ## reference to it
 ##
 ## Input: 3 args a string, a line number, a filename
@@ -42,7 +37,7 @@ sub new_ref
     return $ref;
 }
 
-## creates a hash with six keys "str", "begin", "end", "star",
+## Create a hash with six keys "str", "begin", "end", "star",
 ## "label_line" and "label" and returns a reference to it.
 ##
 ## Input : 7 args
@@ -68,7 +63,7 @@ sub new_math_env
 }
 
 
-## Parses .chk file and looks for the environments defined by
+## Parse .chk file and looks for the environments defined by
 ## @have_star_modes. The first and last line of the environment are stored
 ## togetther with the name of the environment. One last variable is
 ## used to remember if the stared environment was used.
@@ -147,7 +142,7 @@ sub chk_parse
     }
 }
 
-## find labeled and starred environments
+## Find labeled and starred environments
 ## Input : list of entries
 sub star_label
 {
@@ -168,9 +163,8 @@ sub star_label
     print "\n";
 }
 
-## find labels without any corresponding refs.
-## refs must be sorted
-##
+## Find labels without any corresponding \ref.
+## references must be sorted
 sub unused_label
 {
     my ($labels, $refs) = @_;
@@ -195,12 +189,12 @@ sub unused_label
             }
         }
         printf("%s line %4d : remove label %s\n",
-               $l->{file}, $l->{line}, $l->{str})
-            if (!$found);
+               $l->{file}, $l->{line}, $l->{str}) if (!$found);
     }
     print "\n";
 }
 
+## Find bibitems without any corresponding \cite
 sub unused_cites 
 {
     my ($bibcites, $citations) = @_;
@@ -213,7 +207,7 @@ sub unused_cites
     }
 }
 
-## find and remove duplicates in an
+## Find and remove duplicates in an
 ## array of { str, line } entries.
 ## Note that the array must be sorted according to str
 ## Input : ref or label list
@@ -227,7 +221,7 @@ sub rm_duplicate
     return \@uniq_array;
 }
 
-## display all math envs with their characteristics
+## Display all math envs with their characteristics
 ## line of beginning
 ## line of end
 ## starred or not
@@ -261,7 +255,7 @@ my %citations = ();
 my @bibcites  = ();
 my $FIC;
 
-## reads whole file to an array because label and end commands
+## Read the whole file to an array because label and end commands
 ## generally need to be swapped.
 open($FIC, '<', $ARGV[0]) or die("open: $!");
 my @txt = <$FIC>;
