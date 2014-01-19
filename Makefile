@@ -1,29 +1,35 @@
-.PHONY: all install clean dist distclean
+.PHONY: all install clean archive distclean doc
 
 all:
 	$(MAKE) -C src all
+	$(MAKE) -C doc all
+
+doc:
+	$(MAKE) -C doc
 
 install:
 	$(MAKE) -C src install
+	$(MAKE) -C doc install
 
 uninstall:
 	$(MAKE) -C src uninstall
+	$(MAKE) -C doc uninstall
 
 clean:
 	$(MAKE) -C src clean
+	$(MAKE) -C doc clean
 
 distclean:
 	$(MAKE) -C src distclean
+	$(MAKE) -C doc distclean
 
 VERSION=$(shell cat VERSION)
 
-dist:
+archive:
 	$(RM) -r chklref-$(VERSION)
-	$(RM)  chklref-$(VERSION).tar.gz
 	mkdir -p chklref-$(VERSION)
-	(cd chklref-$(VERSION); \
-	svn export svn+ssh://noe/kora/home/mathfi/lelong/svnroot/devel/chklref; \
-	mv chklref/* .; \
-	rmdir chklref; )
-	tar cf - chklref-$(VERSION) | gzip > chklref-$(VERSION).tar.gz
+	$(RM)  chklref-$(VERSION).tar.gz
+	git archive master | tar -x -C chklref-$(VERSION)
+	tar czf chklref-$(VERSION).tar.gz chklref-$(VERSION)
 	$(RM) -r chklref-$(VERSION)
+

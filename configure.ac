@@ -67,7 +67,12 @@ if test "x$PERL_PATH" = "x" ; then
 fi
 AC_SUBST(PERL_PATH)
 
-AC_OUTPUT(src/Makefile src/chklref VERSION)
+AC_OUTPUT(Make.incl
+          doc/Makefile 
+          src/Makefile 
+          src/chklref
+          VERSION)
+
 AC_MSG_NOTICE(
 [
 ** Summary **

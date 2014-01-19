@@ -1,29 +1,13 @@
-#
-# Jérôme Lelong <jerome.lelong@gmail.com>
-# 
-# 2008-2010.
-#
-
 .PHONY: all clean distclean install uninstall
 
-INSTALL=@INSTALL@
-PDFLATEX=@pdflatex_path@
-LATEX=@latex_path@
-
-PKGNAME=@PKGNAME@
-prefix=@prefix@
-bindir=@bindir@
-LATEXDIR=@LATEXDIR@
-DOCDIR=@DOCDIR@
-SCRIPTSDIR=@SCRIPTSDIR@
+include ../Make.incl
 
 SCRIPTS=chkparser
 BINFILES=chklref
 TEXFILES=chklref.sty
-DOCFILES=chklref.pdf
 
 
-all: chklref.pdf clean
+all: 
 
 install: all
 	if ! test -d $(DESTDIR)$(bindir); then $(INSTALL) -d $(DESTDIR)$(bindir); fi
@@ -32,8 +16,6 @@ install: all
 	$(INSTALL) -m 755 $(SCRIPTS) $(DESTDIR)$(SCRIPTSDIR)
 	if ! test -d $(DESTDIR)$(LATEXDIR); then $(INSTALL) -d $(DESTDIR)$(LATEXDIR); fi
 	$(INSTALL) -m 644 $(TEXFILES) $(DESTDIR)$(LATEXDIR)
-	if ! test -d $(DESTDIR)$(DOCDIR); then $(INSTALL) -d $(DESTDIR)$(DOCDIR); fi
-	$(INSTALL) -m 644 $(DOCFILES) $(DESTDIR)$(DOCDIR)
 
 
 define chk_rm
@@ -42,18 +24,10 @@ endef
 
 uninstall:
 	$(call chk_rm, $(bindir), $(DESTDIR)$(BINFILES))
-	$(call chk_rm, $(DOCDIR), $(DESTDIR)$(DOCFILES))
 	$(call chk_rm, $(LATEXDIR), $(DESTDIR)$(TEXFILES))
 	$(call chk_rm, $(SCRIPTSDIR), $(DESTDIR)$(SCRIPTS))
 
 
-chklref.pdf: chklref.tex
-	$(PDFLATEX) $<
-	$(PDFLATEX) $<
-
-clean:
-	$(RM) chklref.dvi chklref.log chklref.aux chklref.out 
-
-distclean: clean
+distclean:
 	$(RM) chklref
 
