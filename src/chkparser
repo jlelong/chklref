@@ -19,7 +19,7 @@
 
 use strict;
 ## recognised math environments
-my @have_star_modes = qw( equation eqnarray align multline figure table );
+my @have_star_modes = qw( equation eqnarray align multline table );
 my $have_star_mode = join('|', @have_star_modes);
 $have_star_mode = "($have_star_mode)";
 
