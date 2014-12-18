@@ -40,7 +40,7 @@ print_usage()
 
 chklref
 
-This is a latex utility to check unused label and bibitem in 
+This is a latex utility to check for unused labels and bibitems in 
 a LaTeX file.
 
 usage: chklref [OPTIONS] file[.tex]
