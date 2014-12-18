@@ -22,7 +22,8 @@
 
 \NeedsTeXFormat{LaTeX2e}%
 \ProvidesPackage{chklref}%
-\RequirePackage{afterpackage}
+\RequirePackage{afterpackage}%
+
 
 \xdef\@chk@currentfile{\jobname.tex}
 \xdef\old@filename{\jobname.tex}
@@ -87,8 +88,8 @@
 }
 
 %\let\CHK@begin@orig=\begin
-  \CHK@redefine{begin}{begin}
-  \CHK@redefine{end}{end}
+\CHK@redefine{begin}{begin}
+\CHK@redefine{end}{end}
 
 \AfterPackage{hyperref}{
   \AtBeginDocument{%
@@ -148,4 +149,6 @@
   \fi
 }
 
+% To prevent error with packages already defining the \AfterPackage macro.
+\let\AfterPackage=\relax
 \endinput
