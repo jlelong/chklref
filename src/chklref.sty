@@ -25,14 +25,6 @@
 \RequirePackage{afterpackage}%
 
 
-\xdef\@chk@currentfile{\jobname.tex}
-\xdef\old@filename{\jobname.tex}
-
-\def\CHK@push#1{\xdef\old@filename{{#1}\old@filename}} 
-\def\CHK@pop{\expandafter\CHK@popit\old@filename\theend}
-\def\CHK@popit#1#2\theend#3{\def#3{#1}%
-  \xdef\old@filename{#2}} 
-
 \newwrite\chk@write
 \immediate\openout\chk@write\jobname.tex.chk%
 \def\chk@print#1{%
@@ -42,36 +34,16 @@
   \endgroup
 }
 
-\long\def \InputIfFileExists#1#2{%
-  \IfFileExists{#1}{#2\@addtofilelist{#1}%
-    \CHK@push{\@chk@currentfile}%
-    \xdef\@chk@currentfile{#1}%
-    \@@input \@filef@und%
-    \CHK@pop\@temp%
-    \xdef\@chk@currentfile{\@temp}}}
-
-\def\@input#1{%
-  \IfFileExists{#1}{%
-    \CHK@push{\@chk@currentfile}%
-    \xdef\@chk@currentfile{#1}%
-    \@@input\@filef@und%
-    \CHK@pop\@temp%
-    \xdef\@chk@currentfile{\@temp}}
-  {\typeout{No file #1.}}}
-  
-
-%% Don't want to redefine \input toto while in preamble because it breaks
-%% loading babel.
+% Track the name of the file currently processed. 
+% This is successfuly done by currfile for 
+% \include{toto}, \input{toto} but NOT \input toto
+% So we need an extra trick, but do it as late as possible.
+\RequirePackage{currfile}
+\def\@chk@currentfile{\expandafter\expandafter\currfilename}
+\def\@@chk@input#1 {\input{#1}}
 \AtBeginDocument{%
-\def\input{\@ifnextchar\bgroup\@iinput\@@chk@input}
-\def\@@chk@input#1 {%
-  \CHK@push{\@chk@currentfile}%
-  \xdef\@chk@currentfile{#1}%
-  \@@input #1%
-  \CHK@pop\@temp%
-  \xdef\@chk@currentfile{\@temp}
-}}
-
+  \def\input{\@ifnextchar\bgroup\@iinput\@@chk@input}
+}
 
 \def\CHK@redefine#1#2{%
   \expandafter\let\csname CHK@#1@orig\expandafter\endcsname\csname#1\endcsname%
