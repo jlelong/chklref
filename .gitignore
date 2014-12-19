@@ -1,0 +1,11 @@
+Make.incl
+VERSION
+autom4te.cache/
+chklref-*.tar.gz
+config.status
+config.log
+doc/Makefile
+doc/VERSION.tex
+doc/chklref.pdf
+src/Makefile
+src/chklref
