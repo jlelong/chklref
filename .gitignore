@@ -9,3 +9,5 @@ doc/VERSION.tex
 doc/chklref.pdf
 src/Makefile
 src/chklref
+test/*.tdo
+test/*.pdf
