@@ -115,8 +115,8 @@ if [ "${dirtexfile}" = "$1" ]; then dirtexfile="."; fi
 
 cd -- "${dirtexfile}"
 
-printf "Running $latex_cmd on $basetexfile.tex to collect labels,
-references and environment declarations\n\n"
+echo "Running $latex_cmd on $basetexfile.tex to collect labels,
+references and environment declarations\n\n" > "$out"
 $latex_cmd --interaction errorstopmode "${basetexfile}" > "$out" 2>&1
 rm -f -- "$basetexfile".tex.chk
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
