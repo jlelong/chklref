@@ -27,11 +27,17 @@
 
 \newwrite\chk@write
 \immediate\openout\chk@write\jobname.tex.chk%
-\def\chk@print#1{%
-  \begingroup
-    \set@display@protect
-    \immediate\write\chk@write{#1}%
-  \endgroup
+\def\chk@immediate@write{\immediate\write}
+\def\chk@print#1{\protect\chk@immediate@write\chk@write{#1}}
+
+% Make sure the auxiliary files are still suitable for usage without the
+% chklref package.
+\RequirePackage{auxhook}[2009/12/14]
+\AddLineBeginAux{\string\let\string\chk@immediate@write\string\@gobbletwo}
+\let\@starttoc@orig\@starttoc
+\def\@starttoc#1{%
+  \@starttoc@orig{#1}%
+  \addtocontents{#1}{\string\let\string\chk@immediate@write\string\@gobbletwo}
 }
 
 % Track the name of the file currently processed. 
