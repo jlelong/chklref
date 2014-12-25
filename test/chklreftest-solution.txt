@@ -1,0 +1,16 @@
+************************************
+** Labels in starred environments **
+************************************
+
+*******************
+** Unused Labels **
+*******************
+chklreftest.tex line   10 : remove label sec:testWithPihat
+chklreftest.tex line   13 : remove label ass:C
+chklreftest.tex line   15 : remove label ass:C:First
+chklreftest.tex line   16 : remove label ass:C:Second
+chklreftest.tex line   33 : remove label mult
+
+**********************************
+** Uncited Bibliography entries **
+**********************************

@@ -1,0 +1,20 @@
+************************************
+** Labels in starred environments **
+************************************
+test21.tex line  106 : consider using a STAR environment
+
+*******************
+** Unused Labels **
+*******************
+test2.tex line  113 : remove label alig
+test2.tex line  119 : remove label mult
+test21.tex line   18 : remove label eq:dS_u_v
+test22.tex line    3 : remove label eq:22
+test22.tex line    3 : remove label eq:22
+test2.tex line  346 : remove label it:1
+test2.tex line  352 : remove label it:2
+test23.tex line    4 : remove label eq:23
+
+**********************************
+** Uncited Bibliography entries **
+**********************************
