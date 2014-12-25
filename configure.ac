@@ -1,4 +1,4 @@
-AC_INIT(chklref,2.5.2, jerome.lelong@gmail.com)
+AC_INIT(chklref,2.6.0, jerome.lelong@gmail.com)
 
 AC_PROG_INSTALL
 
