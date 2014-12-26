@@ -18,15 +18,18 @@
 #########################################################################
 
 use strict;
-## recognised math environments
+# recognised math environments
 my @have_star_modes = qw( equation eqnarray align multline table gather);
 my $have_star_mode = join('|', @have_star_modes);
 $have_star_mode = "($have_star_mode)";
 
-## Create a hash with three keys "str", "line", "file" and returns a
-## reference to it
-##
-## Input: 3 args a string, a line number, a filename
+# Create a hash with three keys "str", "line", "file" and returns a
+# reference to it
+#
+# Input: 3 args 
+#   a string, 
+#   a line number, 
+#   a filename
 sub new_ref
 {
     my ($str, $line, $file) = @_;
@@ -37,17 +40,17 @@ sub new_ref
     return $ref;
 }
 
-## Create a hash with six keys "str", "begin", "end", "star",
-## "label_line" and "label" and returns a reference to it.
-##
-## Input : 7 args
-##    a string (the env name)
-##    line of beginning
-##    line of end
-##    is the env starred?
-##    line on which the label appears
-##    value of the label
-##    file name
+# Create a hash with six keys "str", "begin", "end", "star",
+# "label_line" and "label" and returns a reference to it.
+#
+# Input : 7 args
+#    a string (the env name)
+#    line of beginning
+#    line of end
+#    has the env a star?
+#    line on which the label appears
+#    value of the label
+#    file name
 sub new_math_env
 {
     my ($str, $begin, $end, $star, $label_line, $label, $file) = @_;
@@ -63,19 +66,23 @@ sub new_math_env
 }
 
 
-## Parse .chk file and looks for the environments defined by
-## @have_star_modes. The first and last line of the environment are stored
-## togetther with the name of the environment. One last variable is
-## used to remember if the stared environment was used.
-##
-## Input: a chk file content, entries, refs, labels
-## last 3 args are passed by reference and are modified
+# Parse .chk file and looks for the environments defined by
+# @have_star_modes. The first and last line of the environment are stored
+# along with the name of the environment. One last variable is
+# used to remember if the star version was used.
+#
+# Input: 
+#   a chk file content, 
+#   entries, 
+#   refs, 
+#   labels
+# the last 3 args are passed as references and are modified
 sub chk_parse
 {
     my ($txt, $entries, $refs, $labels, $citations, $bibcites) = @_;
-    my ($str, $begin, $end, $star, $labeled_env, $label, $file, $entry, $l);
+    my ($str, $begin, $end, $star, $labelled_env, $label, $file, $entry, $l);
 
-#     ## swap end and label commands in an array
+#     # swap end and label commands in an array
 #     my ($eline, $lline, $efile, $lfile);
 #     my $prev = "";
 #     for (my $i=0; $i < $#$txt; $i++)
@@ -117,14 +124,14 @@ sub chk_parse
             $begin       = $3;
             $file        = $4;
             $label       = "";
-            $labeled_env = 0;
+            $labelled_env = 0;
             while (defined($l = shift(@$txt)))
             {
                 if ($l =~ m/^label (.+) line (\d+) file (.+)$/o)
                 {
                     push(@$labels, new_ref($1, $2, $3));
                     $label       = $1;
-                    $labeled_env = $2;
+                    $labelled_env = $2;
                 }
                 elsif ($l =~ m/^ref (.+) line (\d+) file (.+)$/o)
                 {
@@ -133,7 +140,7 @@ sub chk_parse
                 elsif ($l =~ m/^end{$str\*{$star}} line (\d+) file (.+)$/)
                 {
                     $end = $1;
-                    $entry =  new_math_env($str, $begin, $end, $star, $labeled_env,
+                    $entry =  new_math_env($str, $begin, $end, $star, $labelled_env,
                                            $label, $file);
                     push(@$entries, $entry);
                     last;
@@ -143,14 +150,14 @@ sub chk_parse
     }
 }
 
-## Find labeled and starred environments
-## Input : list of entries
+# Find environments with both labels and stars
+# Input : list of entries
 sub star_label
 {
     my ($entries) = @_;
-    print "************************************
-** Labels in starred environments **
-************************************\n";
+    print "************************************\n";
+    print "** Labels in starred environments **\n";
+    print "************************************\n";
     foreach my $e (@$entries)
     {
         printf("%s line %4d : remove label %s \n",
@@ -164,16 +171,16 @@ sub star_label
     print "\n";
 }
 
-## Find labels without any corresponding \ref.
-## references must be sorted
+# Find labels without any corresponding references.
+# references must be sorted
 sub unused_label
 {
     my ($labels, $refs) = @_;
     my $found;
 
-    print "*******************
-** Unused Labels **
-*******************\n";
+    print "*******************\n";
+    print "** Unused Labels **\n";
+    print "*******************\n";
     foreach my $l (@$labels)
     {
         $found = 0;
@@ -195,24 +202,24 @@ sub unused_label
     print "\n";
 }
 
-## Find bibitems without any corresponding \cite
+# Find bibitems without any corresponding \cite
 sub unused_cites 
 {
     my ($bibcites, $citations) = @_;
-    print "**********************************
-** Uncited Bibliography entries **
-**********************************\n";
+    print "**********************************\n";
+    print "** Uncited Bibliography entries **\n";
+    print "**********************************\n";
     foreach my $c (@$bibcites)
     {
         print("remove bibitem : $c\n") unless exists ${$citations}{$c};
     }
 }
 
-## Find and remove duplicates in an
-## array of { str, line } entries.
-## Note that the array must be sorted according to str
-## Input : ref or label list
-## returns the corresponding list
+# Find and remove duplicates in an
+# array of { str, line } entries.
+# Note that the array must be sorted according to str
+# Input : ref or label list
+# Return the corresponding list
 sub rm_duplicate
 {
     my ($array) = @_;
@@ -222,11 +229,12 @@ sub rm_duplicate
     return \@uniq_array;
 }
 
-## Display all math envs with their characteristics
-## line of beginning
-## line of end
-## starred or not
-## label
+# Display all math envs with their characteristics
+# Input args
+#  line of beginning
+#  line of end
+#  starred or not
+#  label
 sub disp_msg
 {
     my ($entries) = @_;
@@ -237,7 +245,7 @@ sub disp_msg
         print("env $e->{str} \n");
         print("\tbeginning : $e->{begin}\n\tend : $e->{end}\n");
         print("\tstar environment\n") if ($e->{star} == 1);
-        print("\tlabeled environement\n") if ($e->{label} > 0);
+        print("\tlabelled environement\n") if ($e->{label} > 0);
         print("\n");
     }
 
@@ -256,8 +264,8 @@ my %citations = ();
 my @bibcites  = ();
 my $FIC;
 
-## Read the whole file to an array because label and end commands
-## generally need to be swapped.
+# Read the whole file to an array because label and end commands
+# generally need to be swapped.
 open($FIC, '<', $ARGV[0]) or die("open: $!");
 my @txt = <$FIC>;
 close($FIC);
@@ -268,6 +276,6 @@ chk_parse(\@txt, \@entries, \@refs, \@labels, \%citations, \@bibcites);
 @refs   = sort { $a->{str} cmp $b->{str} } @refs;
 my $uniq_refs = rm_duplicate(\@refs);
 star_label(\@entries);
-##disp_msg( \@entries );
+#disp_msg( \@entries );
 unused_label(\@labels, $uniq_refs);
 unused_cites(\@bibcites, \%citations);
