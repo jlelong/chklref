@@ -24,11 +24,14 @@
 \ProvidesPackage{chklref}%
 \RequirePackage{afterpackage}%
 
+\gdef\CHK@stack{}
 
 \newwrite\CHK@write
-\immediate\openout\CHK@write\jobname.tex.chk%
+\immediate\openout\CHK@write\jobname.chk%
 \def\CHK@immediate@write{\immediate\write}
-\def\CHK@print#1{\protect\CHK@immediate@write\CHK@write{#1}}
+\def\CHK@print#1{%
+  \protect\CHK@immediate@write\CHK@write{#1}%
+}
 
 % Make sure the auxiliary files are still suitable for usage without the
 % chklref package.
@@ -65,7 +68,6 @@
     \expandafter\expandafter\csname CHK@#1@orig\endcsname{##1}}
 }
 
-%\let\CHK@begin@orig=\begin
 \CHK@redefine{begin}{begin}
 \CHK@redefine{end}{end}
 
@@ -127,6 +129,9 @@
   \fi
 }
 
+\AtEndDocument{
+  \message{\CHK@stack}
+}
 % To prevent error with packages already defining the \AfterPackage macro.
 \let\AfterPackage=\relax
 \endinput

@@ -108,7 +108,8 @@ sub chk_parse
         elsif ($l =~ m/^bibcite (.+) line (\d+) file (.+)$/o)
         {
             push(@$bibcites, $1);
-        }        elsif ($l =~ m/^begin{$have_star_mode(\**)} line (\d+) file (.+)$/o)
+        }
+        elsif ($l =~ m/^begin{$have_star_mode(\**)} line (\d+) file (.+)$/o)
         {
             $str         = $1;
             $star        = 1;

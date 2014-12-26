@@ -121,6 +121,6 @@ $latex_cmd --interaction errorstopmode "${basetexfile}" > "$out" 2>&1
 rm -f -- "$basetexfile".tex.chk
 $latex_cmd --interaction errorstopmode --jobname "$basetexfile" \
     '\RequirePackage{chklref}\input' "{$basetexfile.tex}" > "$out" 2>&1
-$PERL "$SCRIPTSDIR"/chkparser "$basetexfile".tex.chk
-[ $debug -ne 0 ] || rm -f -- "$basetexfile".tex.chk
+$PERL "$SCRIPTSDIR"/chkparser "$basetexfile".chk
+[ $debug -ne 0 ] || rm -f -- "$basetexfile".chk
 
