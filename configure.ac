@@ -68,10 +68,8 @@ fi
 AC_SUBST(PERL_PATH)
 
 AC_OUTPUT(Make.incl
-          doc/Makefile 
           src/Makefile 
-          src/chklref
-          VERSION)
+          src/chklref)
 
 AC_MSG_NOTICE(
 [
