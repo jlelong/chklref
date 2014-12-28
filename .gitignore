@@ -1,5 +1,4 @@
 Make.incl
-VERSION
 autom4te.cache/
 chklref-*.tar.gz
 config.status
