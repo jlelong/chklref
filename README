@@ -78,7 +78,7 @@ I. Installation
 
   Just run: chklref texfile
 
-  To run ckhlref, you need a Perl interpreter. As no special Perl
+  To run chklref, you need a Perl interpreter. As no special Perl
   packages are needed, a very basic Perl distribution should be ok.
 
 [1] : TeX Directory Structure http://www.tug.org/twg/tds/
