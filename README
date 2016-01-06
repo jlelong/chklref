@@ -14,6 +14,9 @@ I. Installation
       ./configure
       make
       sudo make install
+      sudo texhash
+
+    This last command is required to update the TeX Directory Structure.
 
     This package follows the TDS[1] and installs:
         * the main program in $(prefix)
@@ -27,10 +30,6 @@ I. Installation
 
     These default values can be changed with the flags --prefix
     and --with-texmf-prefix passed to the configure script.
-
-    Note: Do not forget to run "sudo texhash" to update your TeX Directory 
-    ----
-    Structure.
 
     Notes for installation under MacOS X:
     ------------------------------------
