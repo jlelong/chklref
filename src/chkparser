@@ -105,7 +105,7 @@ sub chk_parse
         {
             push(@$bibcites, $1);
         }
-        elsif ($l =~ m/^begin{$have_star_mode(\**)} line (\d+) file (.+)$/o)
+        elsif ($l =~ m/^begin\{$have_star_mode(\**)\} line (\d+) file (.+)$/o)
         {
             $str          = $1;
             $star         = 1;
@@ -126,7 +126,7 @@ sub chk_parse
                 {
                     push(@$refs, new_ref($1, $2, $3));
                 }
-                elsif ($l =~ m/^end{$str\*{$star}} line (\d+) file (.+)$/)
+                elsif ($l =~ m/^end\{$str\*{$star}\} line (\d+) file (.+)$/)
                 {
                     $end = $1;
                     $entry =  new_math_env($str, $begin, $end, $star, $labelled_env,
