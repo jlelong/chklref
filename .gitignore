@@ -1,11 +1,6 @@
-Make.incl
-autom4te.cache/
 chklref-*.tar.gz
-config.status
-config.log
 doc/VERSION.tex
 doc/chklref.pdf
-src/Makefile
-src/chklref
 test/*.tdo
 test/*.pdf
+test/chklref.sty
