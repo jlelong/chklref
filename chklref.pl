@@ -35,7 +35,8 @@ my $RUNQUIET = 0;
 my $RUNDEBUG = 0;
 my $PARSEONLY = 0;
 my $PRINTVERSION = 0;
-my $VERSION = 'Version 2.6.0';
+my $HELP = 0;
+my $VERSION = 'Version 3.0.0';
 
 # Create a hash with three keys "str", "line", "file" and returns a
 # reference to it
@@ -260,7 +261,7 @@ sub parse {
 sub usage {
 print << 'EOT';
 chklref -- Check unused labels and bibitems
-Version 2.6.0
+
 Copyright (C) 2005-2019 Jérôme Lelong <jerome.lelong@gmail.com>
 This program comes with ABSOLUTELY NO WARRANTY;
 This is free software, and you are welcome to redistribute it under certain conditions;
@@ -275,7 +276,7 @@ Options:
     --quiet, -q             : Run in quiet mode. Do not print the output of the TeX compiler.
     --parse-only            : Do not run the LaTeX compile but use the already existing `.chk` file. When this option is passed, the following other options are meaningless: `--tex`, `--tex-options`, `--quiet`, `--debug`.
     --version, -v           : Print the version of this scirpt.
-
+    --help,h                : Print the help
 EOT
 }
 
@@ -297,8 +298,13 @@ GetOptions (
    'tex|t=s' => \$TEX,
    'texoptions=s' => \$USERTEXOPTIONS,
    'parse-only' => \$PARSEONLY,
-   'help|h' => \&usage,
+   'help|h' => \$HELP
 ) || usage();
+
+if ($HELP) {
+    usage();
+    exit(0);
+}
 
 if ($PRINTVERSION) {
     print "chklref $VERSION\n";
