@@ -14,7 +14,7 @@ git_archive() {
     [[ -d "$LOCAL_TMPDIR" ]] && rm -rf "$LOCAL_TMPDIR"
     mkdir -p "$CHKLREF_DIR"
     cd "$CHKLREFGIT"
-    git archive --format=tar refactor | tar -x -C "$CHKLREF_DIR"
+    git archive --format=tar master | tar -x -C "$CHKLREF_DIR"
     cd "$cwd"
 }
 
