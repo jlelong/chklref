@@ -1,3 +1,5 @@
+Running pdflatex  -interaction nonstopmode   "tof.tex" to collect labels references and environment declarations
+
 ************************************
 ** Labels in starred environments **
 ************************************
