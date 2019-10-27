@@ -1,7 +1,7 @@
 \documentclass[a4paper,11pt,twoside]{article}
 \usepackage{a4wide}
 \usepackage{latexsym,t1enc,lmodern,url}
-\usepackage{amssymb, amsmath}
+\usepackage{amssymb, amsmath,indentfirst}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
@@ -13,37 +13,24 @@
 %%--------------------------------------------
 
 \def\chk{{\it chklref}}
-\input{VERSION.tex}
-\makeatletter
 
-\title{Check \LaTeX\ references : chklref \\
-Version \chkVERSION}
+\title{Check \LaTeX\ references: chklref \\
+Version \input{../VERSION}}
 \date{\today}
 \author{Jérôme Lelong}
-  
 
 \begin{document}
 \maketitle
 
-\begin{abstract} Which \LaTeX\ user has never dreamt of cleaning its \TeX\ file
-  of any useless labels right before submitting an article for instance? This is
-  precisely what \chk\ will help you achieve.
+\begin{abstract} Every \LaTeX\ user has once dreamt of cleaning its \TeX\ file of any useless labels right, for instance before submitting an article. The purpose of \chk\ is precisely to help to do this.
 \end{abstract}
 
-\section{What {\it chklref} can do for a \LaTeX\ user ?}
+\section{What {\it chklref} can do for a \LaTeX\ user?}
 
-While writing a \LaTeX document, it is quite common to add labels that will 
-reveal unused in the end, this is especially true for equations or any other
-mathematical environments. It would be quite convenient to wipe out those labels
-from the final version of the document. \chk\ has been designed to help any
-\TeX\ user do so.
+While writing a \LaTeX document, it is quite common to add labels that will reveal unused in the end, this is especially true for equations or any other mathematical environments. It would be quite convenient to wipe out those labels from the final version of the document. \chk\ has been designed to help \LaTeX\ users do so.
 
-\chk\ parses the \LaTeX\ file to detect labels that do not have any matching
-reference. At the end of the program, a summary is printed with the list of
-labels to be removed. Obviously, this search is performed in the whole document
-and not only within mathematical environments. Nonetheless, there is something
-specifically dedicated to environments that have a star version: it looks
-for the non star environments not containing any label.
+
+\chk\ parses the \LaTeX\ file to detect labels that do not have any matching reference. At the end of the program, a summary is printed with the list of labels to be removed. Obviously, this search is performed in the whole document and not only within mathematical environments. Nonetheless, there is something specifically dedicated to environments that have a star version: it looks for the non star environments not containing any label.
 
 For instance, consider you a have a \LaTeX\ file with the following piece of code
 \begin{verbatim}
@@ -51,23 +38,13 @@ For instance, consider you a have a \LaTeX\ file with the following piece of cod
   x^2 + x + 1 = 0
 \end{equation}
 \end{verbatim}
-\chk\ will advise you to consider using \verb!equation*! instead of
-\verb!equation! in order to remove the unneeded number appearing next to the
-equation.
+\chk\ will advise you to consider using \verb!equation*! instead of \verb!equation! in order to remove the unneeded number appearing next to the equation.
 
-Star environments with labels are also tracked because with most \LaTeX\
-distributions it does not even raise a warning. However in case you may refer to
-this label the number that would appear is likely to be nonsense.
+Star environments with labels are also tracked because with most \LaTeX\ distributions it does not even raise a warning. However if you ever refer to this label, the printed number will most likely be nonsense.
 
-The summary printed at the end of the program contains two sections (see
-Figure~\ref{fig:output}): one is about labels in star environments and one is about
-unneeded labels. Each of these output lines begins with a line number referring
-to the parsed \LaTeX\ file. Then, the decision to be made is printed:
-``remove label'' or ``use a starred environment''. In the case of a ``remove
-label'' message, the label to be removed is also printed to avoid any possible
-confusion.
+The summary printed at the end of the program contains two sections (see Figure~\ref{fig:output}): the first one is about labels in star environments and the second one is about unneeded labels. Each of these output lines begins with a line number referring to the parsed \LaTeX\ file. Then, the action to take is printed: ``remove label'' or ``use a starred environment''. In the case of a ``remove label'' message, the label to be removed is also printed to avoid any possible confusion.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
 \begin{verbatim}
 ************************************
@@ -85,10 +62,8 @@ line  313 : remove label eq:prog_dyn_prix
   \label{fig:output}
 \end{figure}
 
-Since version 2.5, the checking of bibliography entries has been added to detect
-if some entries are not explicitly cited in the text, see
-Figure~\ref{fig:output}. In this case, a ``remove bibitem'' message is printed.
-\begin{figure}[h!]
+Since version 2.5, bibliography entries have also been checked to detect if some entries are not explicitly cited in the text, see Figure~\ref{fig:output}. In this case, a ``remove bibitem'' message is printed.
+\begin{figure}[!ht]
   \centering
 \begin{verbatim}
 **********************************
@@ -103,100 +78,59 @@ remove bibitem : premia
 
 \section{Usage}
 
-Typical usage : \verb!chklref file.tex!.
-\\
+There are two ways of using the package.
+
+\begin{enumerate}
+  \item Directly calling \verb!perl chklref.pl file.tex!.
+  \item Adding \verb!\usepackage{chklref}! to your main \LaTeX\ file and compiling it normally. This will create a file with extension \verb!.chk!, which can then be parsed by the Perl script:
+\begin{verbatim}
+  perl chklref.pl --parse-only file.tex
+\end{verbatim}
+  Note that you need to pass the \verb!.tex! file to the parser not the \verb!.chk! file.
+\end{enumerate}
+
 
 \section{Installation}
 
+\subsection{Installation into the \TeX\ structure}
 
-\subsection{System wide installation}
-
-You need the root privileges to perform this installation. \\
-
-\noindent Simply run 
-
-\begin{verbatim}
-  ./configure
-  make
-  sudo make install
-\end{verbatim}
 This package follows the TDS\footnote{TeX Directory Structure
-  \url{http://www.tug.org/twg/tds/}} and installs:
+  \url{http://www.tug.org/twg/tds/}}:
 \begin{itemize}
-  \item  the main program in \verb!$(prefix)!
-  \item  the \TeX\ package \verb!chklref.sty! in \verb!$(texmf_prefix)/tex/latex/chklref!
-  \item  the manual \verb!chklref.pdf! in \verb!$(texmf_prefix)/doc/latex/chklref!
-  \item  the Perl parser \verb!chkparser! in \verb!$(texmf_prefix)/scripts/chklref!
+  \item  put the \TeX\ package \verb!chklref.sty! into \verb!$(texmf_prefix)/tex/latex/chklref!
+  \item  put the manual \verb!chklref.pdf! into \verb!$(texmf_prefix)/doc/latex/chklref!
+  \item  put the Perl parser \verb!chklref.pl! into \verb!$(texmf_prefix)/scripts/chklref!
 \end{itemize}
-The following default values are used
-\begin{itemize}
-  \item  \verb!prefix=/usr/local!
-  \item \verb!texmf_prefix=$(prefix)/share/texmf!
-\end{itemize}
+Note that you will also need to make a link or copy \verb!chklref.sty! to a location in your \texttt{PATH}. \\
 
-These default values can be changed with the flags \verb!--prefix!  and
-\verb!--with-texmf-prefix! passed to the configure script.\\
+Depending on your OS and \TeX\ distribution, the TEXMF directory \verb!texmf_prefix! can have different values
+\begin{description}
+  \item[Single account installation under Linux] \verb!~/texmf!.
+  \item[Single account installation under Mac OS X] \verb!~/texmf! or \verb!$HOME/Library/texmf!.
+  \item[System wide installation under Linux] \verb!/usr/share/texmf-local/!.
+  \item[System wide installation under Mac OS X] \verb!/usr/local/texlive/texmf-local/!.
+  \item[Under Windows] something like \verb!C:\localtexmf\!. Check in your distribution settings.
+\end{description}
 
-Do not forget to run "sudo texhash" to update your \TeX\ Directory Structure.
+\noindent \textbf{You may need to run \texttt{texhash} to update your \TeX\ Directory Structure.}
 
-\paragraph{Notes for installation under MacOS X.}
+The fastest way to carry out the installation is to use the file \verb!chklref.tds.zip! included in the numbered releases (not available inside the git repository). You just have to unzip it inside the proper \verb!texmf_prefix!. Alternatively, you can copy the files by hand.
 
-Under MacOS X, your tex distribution is probably not installed under
-\verb!/usr/share/texmf! nor \verb!/usr/local/share/texmf!. You are most likely using
-the TeXlive distribution provided by MacTeX which installs under
-\verb!/usr/local/texlive!. Hence, you should invoke configure with
+\subsection{Local installation}
 
-\begin{verbatim}
-  --with-texmf-prefix=/usr/local/texlive/texmf-local
-\end{verbatim}
-
-\subsection{Installation on a single account}
-
-This installation does not require any particular privileges.
-
-We assume that the directory \verb!$HOME/bin! is in your PATH, if not you have to add it
-your PATH. You can install the software on your account using
-\begin{verbatim}
-  ./configure --prefix=$HOME --with-texmf-prefix=$HOME/texmf
-  make
-  make install
-\end{verbatim}
-For the installation on a single account, there is \emph{no} need to run
-texhash.
-
-
-\paragraph{Notes for installation under MacOS X.}
-
-The directory \verb!$HOME/texmf! may not exist because it is replaced by
-\verb!$HOME/Library/texmf! instead. So, either use
-\begin{verbatim}
-  ./configure --prefix=$HOME --with-texmf-prefix=$HOME/Library/texmf
-\end{verbatim}
-or create a symbolic link
-\begin{verbatim}
-  ln -s $HOME/Library/texmf $HOME/texmf
-\end{verbatim}
-
+Instead of carrying out a system wide installation, you can simply copy the package file \verb!chklref.sty! next to your main \LaTeX\ file and put the Perl script \verb!chklref.pl! next to it or in anywhere in your \texttt{PATH}.
 
 
 \section{Requirements}
 
-\chk\ is written mainly in \TeX\ with a small Perl script to parser the output
-generated by the \TeX\ package. It should be working with any standard Perl
-installation.
+The \chk\ tool is written mainly in \TeX\ with a small Perl script to parse the output generated by the \TeX\ package. It should be working with any standard Perl installation. \\
+
+The Perl script calls a LaTeX compiler labels related information.
 
 \section{Source code}
 
-The source code is available from GitHub
-\url{https://github.com/jlelong/chklref}.
-\\
+The source code is available from GitHub \url{https://github.com/jlelong/chklref}. \\
 
-\noindent It is distributed under the GPL licence version 3 or any later version
-in the hope it will be useful but without any warranty. Should you find a bug in
-chklref, send me a mail to \verb!jerome.lelong@gmail.com! describing the problem
-with a minimal \LaTeX\ file to reproduce the problem or fill in an issue on the
-GitHub repository.
+It is distributed under the GPL licence version 3 or any later version in the hope it will be useful but without any warranty. Should you find a bug in chklref, create an issue at \url{https://github.com/jlelong/chklref/issues} and please provide minimal a \LaTeX\ file to reproduce the problem.
 
 \end{document}
-% vim: set spelllang=en spell:
-
