@@ -33,6 +33,7 @@ my $TEXOPTIONS = ' -interaction nonstopmode ';
 my $USERTEXOPTIONS = '';
 my $RUNQUIET = 0;
 my $RUNDEBUG = 0;
+my $PARSEONLY = 0;
 my $PRINTVERSION = 0;
 my $VERSION = 'Version 2.6.0';
 
@@ -270,8 +271,9 @@ Usage:
 Options:
     --tex <compiler>, -t    : Specifiy the TeX compiler to be used. Default = pdflatex.
     --tex-options           : List of options to pass to the TeX compiler.
-    --degub, -d             : Run in debug mode. Do not clean the .chk generated file.
+    --degub, -d             : Run in debug mode. Do not clean the generated .chk file.
     --quiet, -q             : Run in quiet mode. Do not print the output of the TeX compiler.
+    --parse-only            : Do not run the LaTeX compile but use the already existing `.chk` file. When this option is passed, the following other options are meaningless: `--tex`, `--tex-options`, `--quiet`, `--debug`.
     --version, -v           : Print the version of this scirpt.
 
 EOT
@@ -294,6 +296,7 @@ GetOptions (
    'debug|d!' => \$RUNDEBUG,
    'tex|t=s' => \$TEX,
    'texoptions=s' => \$USERTEXOPTIONS,
+   'parse-only' => \$PARSEONLY,
    'help|h' => \&usage,
 ) || usage();
 
@@ -313,8 +316,13 @@ my $dirtexfile = dirname($texfile);
 my $basetexfile = basename($texfile, '.tex');
 my $chkfile = $basetexfile . '.chk';
 chdir($dirtexfile);
-texcompile($texfile, $basetexfile);
-parse($chkfile);
-if (! $RUNDEBUG) {
-    unlink($chkfile);
+if ($PARSEONLY) {
+    parse($chkfile);
+}
+else {
+    texcompile($texfile, $basetexfile);
+    parse($chkfile);
+    if (! $RUNDEBUG) {
+        unlink($chkfile);
+    }
 }
