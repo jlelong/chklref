@@ -270,13 +270,13 @@ Usage:
     chklref [options] texfile
 
 Options:
-    --tex <compiler>, -t    : Specifiy the TeX compiler to be used. Default = pdflatex.
+    --tex <compiler>, -t    : Specify the TeX compiler to be used. Default = pdflatex.
     --tex-options           : List of options to pass to the TeX compiler.
-    --degub, -d             : Run in debug mode. Do not clean the generated .chk file.
+    --debug, -d             : Run in debug mode. Do not clean the generated `.chk` file.
     --quiet, -q             : Run in quiet mode. Do not print the output of the TeX compiler.
-    --parse-only            : Do not run the LaTeX compile but use the already existing `.chk` file. When this option is passed, the following other options are meaningless: `--tex`, `--tex-options`, `--quiet`, `--debug`.
+    --parse-only            : Do not run the LaTeX compiler but use the already existing `.chk` file. When this option is passed, the following other options are meaningless: `--tex`, `--tex-options`, `--quiet`, `--debug`.
     --version, -v           : Print the version of this scirpt.
-    --help,h                : Print the help
+    --help,h                : Print this help.
 EOT
 }
 
