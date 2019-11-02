@@ -34,6 +34,7 @@ create_tds() {
     mkdir -p scripts/chklref
     cp ../chklref.sty tex/latex/chklref
     cp ../doc/chklref.{tex,pdf} doc/latex/chklref
+    cp ../README.md doc/latex/chklref
     cp ../chklref.pl scripts/chklref
     cd ..
     zip -r chklref.tds.zip chklref.tds
