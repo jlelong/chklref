@@ -36,7 +36,7 @@ my $RUNDEBUG = 0;
 my $PARSEONLY = 0;
 my $PRINTVERSION = 0;
 my $HELP = 0;
-my $VERSION = 'Version 3.0.0';
+my $VERSION = 'Version 3.0.1';
 
 # Create a hash with three keys "str", "line", "file" and returns a
 # reference to it
