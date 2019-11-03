@@ -42,7 +42,14 @@ create_tds() {
     cd "$cwd"
 }
 
+create_zip() {
+    cwd=$(pwd)
+    cd "$CHKLREF_DIR/.."
+    zip -r chklref.zip chklref
+    cd "$cwd"
+}
+
 git_archive
 compile_doc
 create_tds
-zip -r "$CHKLREF_DIR.zip" "$CHKLREF_DIR"
+create_zip
