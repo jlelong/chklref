@@ -10,6 +10,7 @@ CHKLREF_DIR="$LOCAL_TMPDIR/chklref"
 
 # Perform git archive
 git_archive() {
+    echo '-- Creating an archive from the git repository'
     cwd=$(pwd)
     [[ -d "$LOCAL_TMPDIR" ]] && rm -rf "$LOCAL_TMPDIR"
     mkdir -p "$CHKLREF_DIR"
@@ -19,6 +20,7 @@ git_archive() {
 }
 
 compile_doc() {
+    echo '-- Compiling the documentation'
     cwd=$(pwd)
     cd "$CHKLREF_DIR/doc"
     make
@@ -26,6 +28,7 @@ compile_doc() {
 }
 
 create_tds() {
+    echo '-- Creating chklref.tds.zip'
     cwd=$(pwd)
     mkdir -p "$CHKLREF_DIR/chklref.tds"
     cd "$CHKLREF_DIR/chklref.tds"
@@ -43,6 +46,7 @@ create_tds() {
 }
 
 create_zip() {
+    echo '-- Creating chklref.zip'
     cwd=$(pwd)
     cd "$CHKLREF_DIR/.."
     zip -r chklref.zip chklref
