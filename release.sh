@@ -30,15 +30,15 @@ compile_doc() {
 create_tds() {
     echo '-- Creating chklref.tds.zip'
     cwd=$(pwd)
-    mkdir -p "$CHKLREF_DIR/chklref.tds"
-    cd "$CHKLREF_DIR/chklref.tds"
+    mkdir -p "$CHKLREF_DIR/../chklref.tds"
+    cd "$CHKLREF_DIR/../chklref.tds"
     mkdir -p tex/latex/chklref
     mkdir -p doc/latex/chklref
     mkdir -p scripts/chklref
-    cp ../chklref.sty tex/latex/chklref
-    cp ../doc/chklref.{tex,pdf} doc/latex/chklref
-    cp ../README.md doc/latex/chklref
-    cp ../chklref.pl scripts/chklref
+    cp chklref/chklref.sty tex/latex/chklref
+    cp chklref/doc/chklref.{tex,pdf} doc/latex/chklref
+    cp chklref/README.md doc/latex/chklref
+    cp chklref/chklref.pl scripts/chklref
     cd ..
     zip -r chklref.tds.zip chklref.tds
     rm -rf chklref.tds
@@ -49,7 +49,7 @@ create_zip() {
     echo '-- Creating chklref.zip'
     cwd=$(pwd)
     cd "$CHKLREF_DIR/.."
-    zip -r chklref.zip chklref
+    zip -r chklref.zip chklref chklref.tds.zip
     cd "$cwd"
 }
 
