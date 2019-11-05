@@ -34,9 +34,6 @@ my $USERTEXOPTIONS = '';
 my $RUNQUIET = 0;
 my $RUNDEBUG = 0;
 my $PARSEONLY = 0;
-my $PRINTVERSION = 0;
-my $HELP = 0;
-my $VERSION = 'Version 3.0.1';
 
 # Create a hash with three keys "str", "line", "file" and returns a
 # reference to it
@@ -285,7 +282,7 @@ EOT
 
 sub version {
     print << 'EOT';
-chklref 3.0.1
+chklref 3.1.0
 
 Copyright 2005-2019 Jerome Lelong <jerome.lelong@gmail.com>.
 This program comes with ABSOLUTELY NO WARRANTY.
