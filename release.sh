@@ -34,9 +34,11 @@ create_tds() {
     cd "$CHKLREF_DIR/chklref.tds"
     mkdir -p tex/latex/chklref
     mkdir -p doc/latex/chklref
+    mkdir -p doc/man/man1
     mkdir -p scripts/chklref
     cp ../chklref.sty tex/latex/chklref
     cp ../doc/chklref.{tex,pdf} doc/latex/chklref
+    cp ../doc/chklref.1 doc/man/man1
     cp ../README.md doc/latex/chklref
     cp ../chklref.pl scripts/chklref
     zip -r ../../chklref.tds.zip *
@@ -56,3 +58,4 @@ git_archive
 compile_doc
 create_tds
 create_zip
+echo "-- $CHKLREF_DIR"

@@ -1,8 +1,12 @@
-# Installation
+# chklref
 
-## System wide installation
+Written by Jerome Lelong <jerome.lelong@gmail.com> and distributed under the terms of GNU GPLv3.
 
-### Installation into the TeX structure
+## Installation
+
+### System wide installation
+
+#### Installation into the TeX structure
 
 This package follows the TDS[1]
 
@@ -41,7 +45,7 @@ You typically just run: `perl chklref.pl file.tex`
 The full calling syntax is `perl chklref.pl [options] file.tex`, where `options` can be
 
 - `--tex <compiler>`, `-t`: Specify the TeX compiler to be used. Default is `pdflatex`.
-- `--tex-options`: List of options to pass to the TeX compiler. Note that we always add `-interaction nonstopmode` on top of these options.
+- `--tex-options`: List of options to pass to the TeX compiler. It should be a quoted string of white space delimited options. Note that we always add `-interaction nonstopmode` on top of these options.
 - `--debug`, `-d`: Run in debug mode. Do not clean the generated `.chk` file.
 - `--quiet`, `-q`: Run in quiet mode. Do not print the output of the TeX compiler.
 - `--parse-only`: Do not run the LaTeX compiler but use the already existing `.chk` file. When this option is passed, the following other options are meaningless: `--tex`, `--tex-options`, `--quiet`, `--debug`.
@@ -49,3 +53,9 @@ The full calling syntax is `perl chklref.pl [options] file.tex`, where `options`
 - `--help,h`: Print this help.
 
 [1] : TeX Directory Structure http://www.tug.org/twg/tds/
+
+## Bugs
+
+Report bugs to https://github.com/jlelong/chklref.
+
+`chklref` is known not to work with `cleveref`. If you would like to contribute to `chklref`, feel free to open a PR on https://github.com/jlelong/chklref.
