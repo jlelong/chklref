@@ -11,7 +11,8 @@ Written by Jerome Lelong <jerome.lelong@gmail.com> and distributed under the ter
 This package follows the TDS[1]
 
 - put the TeX package `chklref.sty` into `$(texmf_prefix)/tex/latex/chklref`
-- put the manual `chklref.pdf` into `$(texmf_prefix)/doc/latex/chklref`
+- put the documentation `doc/chklref.pdf` into `$(texmf_prefix)/doc/latex/chklref`
+- put the man page `doc/chklref.1` into `$(texmf_prefix)/doc/man/man1`
 - put the Perl parser `chklref.pl` into `$(texmf_prefix)/scripts/chklref`
 
 Note that you will also need to make a link or copy `chklref.pl` to a location in your `PATH`. On Unix systems, you may need to set the script as executable.
@@ -52,10 +53,16 @@ The full calling syntax is `perl chklref.pl [options] file.tex`, where `options`
 - `--version`, `-v`: Print the version of this script.
 - `--help,h`: Print this help.
 
-[1] : TeX Directory Structure http://www.tug.org/twg/tds/
+Alternatively, you can directly add `\usepackage{chklref}` to your main LaTeX file and compile it normally. This will create a file with extension `.chk`, which can then be parsed by the Perl script:
+
+    perl chklref.pl --parse-only file.tex
+
+Note that you need to pass the \verb!.tex! file to the parser not the `.chk` file.
 
 ## Bugs
 
 Report bugs to https://github.com/jlelong/chklref.
 
 `chklref` is known not to work with `cleveref`. If you would like to contribute to `chklref`, feel free to open a PR on https://github.com/jlelong/chklref.
+
+[1] : TeX Directory Structure http://www.tug.org/twg/tds/
