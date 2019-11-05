@@ -282,7 +282,7 @@ EOT
 
 sub version {
     print << 'EOT';
-chklref 3.1.0
+chklref 3.1.2
 
 Copyright 2005-2019 Jerome Lelong <jerome.lelong@gmail.com>.
 This program comes with ABSOLUTELY NO WARRANTY.
